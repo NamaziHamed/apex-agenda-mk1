@@ -1,7 +1,23 @@
+import AddListDialog from "@/components/categoryViews/AddListDialog";
+import CategoryItem from "@/components/categoryViews/CategoryItem";
 import React from "react";
 
 const categoryView = () => {
-  return <div>categoryView</div>;
+  return (
+    <div className="border h-full p-2 space-y-1 relative">
+      <h2 className="mb-2 text-xl sm:text-2xl lg:text-3xl font-semibold">
+        Views
+      </h2>
+      <CategoryItem />
+      <CategoryItem />
+      <CategoryItem />
+      <CategoryItem />
+      <CategoryItem />
+      <div className="absolute bottom-2 w-full">
+        <AddListDialog />
+      </div>
+    </div>
+  );
 };
 
 export default categoryView;

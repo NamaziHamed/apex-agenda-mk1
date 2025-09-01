@@ -44,7 +44,7 @@ const CategoryForm = ({ onClose }: { onClose: () => void }) => {
             <FormItem>
               <FormLabel>List name:</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Pay the bills" {...field} />
+                <Input type="text" placeholder="Holliday" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -1,20 +1,28 @@
 "use client";
+import { useUiStore } from "@/store/uiStore";
 import { useState, useEffect } from "react";
 
 export function useMediaQuery(threshold: number = 640) {
-  const [isBelowThreshold, setIsBelowThreshold] = useState(false);
+  const [matches, setMatches] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const setIsMobile = useUiStore((state) => state.setIsMobile);
 
   useEffect(() => {
     const checkWidth = () => {
-      setIsBelowThreshold(window.innerWidth < threshold);
+      setMatches(window.innerWidth < threshold);
+      setIsLoading(false);
     };
-
     checkWidth();
 
     window.addEventListener("resize", checkWidth);
+    setIsLoading(false);
 
     return () => window.removeEventListener("resize", checkWidth);
   }, [threshold]);
 
-  return isBelowThreshold;
+  useEffect(() => {
+    setIsMobile(matches);
+  }, [matches]);
+
+  return { matches, isLoading };
 }
