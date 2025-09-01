@@ -1,0 +1,47 @@
+"use client";
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { Button } from "../ui/button";
+import { PlusIcon } from "lucide-react";
+import CategoryForm from "../forms/CategoryForm";
+import { useUiStore } from "@/store/uiStore";
+
+const AddListDialog = () => {
+  const isOpen = useUiStore((state) => state.isCategoryDialogOpen);
+  const onOpen = useUiStore((state) => state.setCategoryDialogOpen);
+  const onClose = useUiStore((state) => state.setCategoryDialogClose);
+
+  const handleOpenChange = () => {
+    if (isOpen) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  };
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button variant={"ghost"} onClick={onOpen}>
+          <PlusIcon />
+          <span>Add list</span>
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add new List or Group</DialogTitle>
+          <DialogDescription></DialogDescription>
+        </DialogHeader>
+        <CategoryForm onClose={onClose} />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default AddListDialog;
