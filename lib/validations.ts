@@ -65,3 +65,30 @@ export const categoryFormSchema = z.object({
 });
 
 export type categoryFormSchema = z.infer<typeof categoryFormSchema>;
+
+export const taskPayloadSchema = z.object({
+  title: z.string().min(1, "Title cannot be empty."),
+  isToday: z.boolean().optional(),
+  setTodayDate: z.string().optional(),
+  isImportant: z.boolean().optional(),
+  categoryId: z.string().nullable().optional(),
+});
+
+export type TaskPayload = z.infer<typeof taskPayloadSchema>;
+
+export const tasksChema = z.object({
+  id: z.string(),
+  title: z.string().min(1, "Title cannot be empty."),
+  description: z.string().optional().nullable(),
+  reminder: z.iso.datetime().optional().nullable(),
+  dueDate: z.iso.datetime().optional().nullable(),
+  completedAt: z.iso.datetime().optional().nullable(),
+  updatedAt: z.iso.datetime(),
+  createdAt: z.iso.datetime(),
+  isToday: z.boolean().optional(),
+  setTodayDate: z.string().optional().nullable(),
+  isImportant: z.boolean().optional(),
+  categoryId: z.string().nullable().optional(),
+});
+
+export type tasksChemaProps = z.infer<typeof tasksChema>;

@@ -13,10 +13,14 @@ import CategoryItem from "./CategoryItem";
 import AddListDialog from "./AddListDialog";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
+import CategoryViewSect from "./CategoryViewSect";
+import { useUiStore } from "@/store/uiStore";
 
 const CategoryMobileView = () => {
+  const isExpanded = useUiStore((state) => state.dashboardExpanded);
+  const toggleExpand = useUiStore((state) => state.toggleDashboardExpanded);
   return (
-    <Sheet>
+    <Sheet open={isExpanded} onOpenChange={toggleExpand}>
       <SheetTrigger asChild>
         <Button className="w-fit" variant={"ghost"}>
           <Menu />
@@ -31,7 +35,7 @@ const CategoryMobileView = () => {
         </SheetTitle>
         <SheetDescription>Select a view to continue</SheetDescription>
         <Separator />
-        <CategoryItem />
+        <CategoryViewSect />
         <SheetFooter>
           <AddListDialog />
         </SheetFooter>

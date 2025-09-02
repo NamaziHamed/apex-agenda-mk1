@@ -3,7 +3,7 @@ import { registerSchema } from "@/lib/validations";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { predefinedCategories } from "@/utils/predefined";
+import { predefinedViews } from "@/utils/predefined";
 
 export async function POST(req: Request) {
   try {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
       },
     });
 
-    const categoriesToCreate = predefinedCategories.map((item) => ({
+    const categoriesToCreate = predefinedViews.map((item) => ({
       title: item.title,
       icon: item.icon,
       userId: newUser.id,

@@ -17,8 +17,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  categories    Category[] // User can have multiple categories
-  tasks         Task[]     // User can have multiple tasks
+  categories    Category[] 
+  tasks         Task[]     
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -67,11 +67,11 @@ model VerificationToken {
 model Category {
   id          String   @id @default(cuid())
   title       String
-  icon        String?
+  icon        String?   @default("Tasks")
   createdAt   DateTime @default(now())
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks       Task[]   // A category can have multiple tasks
+  tasks       Task[]   
 
   @@unique([userId, title])
   @@index([userId, title])
@@ -84,11 +84,14 @@ model Task {
   description String?
   reminder    DateTime?
   dueDate     DateTime?
+  completedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  completedAt DateTime?
+  setTodayDate DateTime?
   completed   Boolean   @default(false)
   isImportant Boolean   @default(false)
+  isToday     Boolean   @default(false)
+
   userId      String
   categoryId  String?
 
