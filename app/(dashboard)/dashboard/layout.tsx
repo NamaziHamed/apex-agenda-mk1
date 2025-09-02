@@ -12,7 +12,7 @@ interface layoutProps {
 }
 
 const layout = ({ children, categoryView, taskView }: layoutProps) => {
-  const { matches: isMobile, isLoading } = useMediaQuery(640);
+  const { matches: isMobile, isLoading } = useMediaQuery();
 
   if (isLoading) return <MenuIcon className="w-3 h-3" />;
 
@@ -20,7 +20,7 @@ const layout = ({ children, categoryView, taskView }: layoutProps) => {
     <div className="flex flex-col min-h-screen">
       <Header />
       <div
-        className="flex-1 bg-card grid sm:grid-cols-[25%_75%] sm:m-10 sm:rounded-2xl 
+        className="flex-1 bg-card grid md:grid-cols-[25%_75%] md:m-10 md:rounded-2xl 
       text-card-foreground p-4 xl:p-6 relative"
       >
         {!isMobile && <div>{categoryView}</div>}

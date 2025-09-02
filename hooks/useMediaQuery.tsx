@@ -2,7 +2,7 @@
 import { useUiStore } from "@/store/uiStore";
 import { useState, useEffect } from "react";
 
-export function useMediaQuery(threshold: number = 640) {
+export function useMediaQuery(threshold: number = 768) {
   const [matches, setMatches] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const setIsMobile = useUiStore((state) => state.setIsMobile);
