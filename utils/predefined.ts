@@ -4,8 +4,9 @@ export const predefinedViews = [
 ];
 
 export const staticView = [
-  { title: "Important", icon: "Star" },
-  { title: "Scheduled", icon: "AlarmClockCheck" },
-  { title: "Completed", icon: "ListChecks" },
-  { title: "All", icon: "Infinity" },
+  { id: "Today", title: "Today", icon: "Sun" },
+  { id: "Important", title: "Important", icon: "Star" },
+  { id: "Planned", title: "Planned", icon: "AlarmClockCheck" },
+  { id: "Completed", title: "Completed", icon: "ListChecks" },
+  { id: "All", title: "All", icon: "Infinity" },
 ];

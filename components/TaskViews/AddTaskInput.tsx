@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,6 +11,15 @@ import { useUiStore } from "@/store/uiStore";
 const AddTaskInput = ({ view }: { view: string }) => {
   const id = useUiStore((state) => state.selectedCategoryId);
   const { mutate: createCategory, isPending } = useCreateTask();
+  const [isDiabled, setDisable] = useState(false);
+
+  useEffect(() => {
+    if (view === "Planned" || view === "Completed") {
+      setDisable(true);
+    } else {
+      setDisable(false);
+    }
+  }, [view]);
 
   const form = useForm({
     resolver: zodResolver(taskPayloadSchema),
@@ -20,11 +29,14 @@ const AddTaskInput = ({ view }: { view: string }) => {
   });
 
   const handleSubmit = (data: TaskPayload) => {
-    createCategory({ title: data.title, view, categoryId: id },{
-      onSuccess: () =>{
-        form.reset()
+    createCategory(
+      { title: data.title, view, categoryId: id },
+      {
+        onSuccess: () => {
+          form.reset();
+        },
       }
-    });
+    );
   };
 
   return (
@@ -40,7 +52,7 @@ const AddTaskInput = ({ view }: { view: string }) => {
                   type="text"
                   placeholder="Pay the bills"
                   {...field}
-                  disabled={isPending}
+                  disabled={isPending || isDiabled}
                 />
               </FormControl>
             </FormItem>

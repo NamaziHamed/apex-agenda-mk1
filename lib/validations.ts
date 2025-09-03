@@ -83,6 +83,7 @@ export const tasksChema = z.object({
   reminder: z.iso.datetime().optional().nullable(),
   dueDate: z.iso.datetime().optional().nullable(),
   completedAt: z.iso.datetime().optional().nullable(),
+  completed: z.boolean(),
   updatedAt: z.iso.datetime(),
   createdAt: z.iso.datetime(),
   isToday: z.boolean().optional(),

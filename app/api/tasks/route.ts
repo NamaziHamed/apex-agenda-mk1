@@ -3,6 +3,28 @@ import { prisma } from "@/lib/prisma";
 import { taskPayloadSchema } from "@/lib/validations";
 import { NextResponse } from "next/server";
 
+export async function GET(_: Request) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const res = await prisma.task.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "asc" },
+    });
+
+    return NextResponse.json(res, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(req: Request) {
   const session = await auth();
 

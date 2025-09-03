@@ -3,6 +3,7 @@ import React from "react";
 import CategoryItem from "./CategoryItem";
 import { useGetCategories } from "@/hooks/useCategory";
 import { Loader2 } from "lucide-react";
+import { staticView } from "@/utils/predefined";
 
 const CategoryViewSect = () => {
   const { data: categories, status } = useGetCategories();
@@ -13,6 +14,10 @@ const CategoryViewSect = () => {
 
   return (
     <ul className="space-y-1">
+      {staticView.map((category) => (
+        <CategoryItem item={category} key={category.id} />
+      ))}
+
       {status === "success" &&
         categories?.map((category) => (
           <CategoryItem item={category} key={category.id} />

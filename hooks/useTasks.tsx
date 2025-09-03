@@ -21,6 +21,7 @@ export function useCreateTask() {
       createTask(data.title, data.view, data.categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => {
       const errorMessage = error.message;
