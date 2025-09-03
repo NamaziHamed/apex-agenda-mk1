@@ -1,3 +1,4 @@
+import { stringify } from "querystring";
 import { tasksChemaProps } from "./validations";
 
 export async function fetchTasks(): Promise<tasksChemaProps[]> {
@@ -63,6 +64,20 @@ export async function createTask(
   });
 
   if (!res.ok) throw new Error("Internal Server Error");
+
+  return res.json();
+}
+
+export async function updateTask(data: any, taskId: string) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error("Update failed, try again!");
+  }
 
   return res.json();
 }
