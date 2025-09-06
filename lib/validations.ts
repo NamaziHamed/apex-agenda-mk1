@@ -87,9 +87,25 @@ export const tasksChema = z.object({
   updatedAt: z.iso.datetime(),
   createdAt: z.iso.datetime(),
   isToday: z.boolean().optional(),
-  setTodayDate: z.string().optional().nullable(),
+  setTodayDate: z.iso.datetime().optional().nullable(),
   isImportant: z.boolean().optional(),
   categoryId: z.string().nullable().optional(),
 });
 
 export type tasksChemaProps = z.infer<typeof tasksChema>;
+
+export const editTaskSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1, "Title cannot be empty."),
+  description: z.string().optional().nullable(),
+  reminder: z.iso.datetime().optional().nullable(),
+  dueDate: z.iso.datetime().optional().nullable(),
+  isImportant: z.boolean().optional(),
+  completed: z.boolean().optional(),
+  completedAt: z.iso.datetime().optional().nullable(),
+  categoryId: z.string().nullable().optional(),
+  isToday: z.boolean().optional(),
+  setTodayDate: z.iso.datetime().optional().nullable(),
+});
+
+export type editTaskProps = z.infer<typeof editTaskSchema>;

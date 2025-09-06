@@ -11,24 +11,55 @@ import { tasksChemaProps } from "@/lib/validations";
 import { useUpadeTask } from "@/hooks/useTasks";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { useTaskDetailsStore } from "@/store/taskDetailsStore";
 
 const TaskItem = ({ task }: { task: tasksChemaProps }) => {
+  const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
+  const setTaskContent = useTaskDetailsStore((state) => state.setTaskContent);
+
   const { mutate: updateTask } = useUpadeTask();
 
   const handleCompleteState = () => {
-    updateTask({ data: { completed: !task.completed }, taskId: task.id });
+    const newCompletedState = !task.completed;
+    const newCompletedAt = newCompletedState ? new Date().toISOString() : null;
+
+    updateTask({
+      data: {
+        completed: newCompletedState,
+        completedAt: newCompletedAt,
+      },
+      taskId: task.id,
+    });
   };
 
   const handleImportantState = () => {
     updateTask({ data: { isImportant: !task.isImportant }, taskId: task.id });
   };
 
+  const handleCardClick = (e: any) => {
+    if (
+      e.target.closest("button") ||
+      e.target.closest('input[type="checkbox"]')
+    )
+      return;
+    setTaskContent(task);
+    toggleSheetOpen();
+  };
+
   return (
     <Card>
-      <CardContent className="flex w-full items-center gap-3 relative">
+      <CardContent
+        className={cn(
+          "flex w-full items-center gap-5 relative",
+          task.completed && "text-muted-foreground"
+        )}
+        onClick={(e) => handleCardClick(e)}
+      >
         <Checkbox checked={task.completed} onClick={handleCompleteState} />
-        <div>
-          <CardTitle>{task.title}</CardTitle>
+        <div className="flex flex-col gap-2">
+          <CardTitle className={`${task.completed && "line-through"}`}>
+            {task.title}
+          </CardTitle>
           <CardDescription>{task.description}</CardDescription>
         </div>
         <Button

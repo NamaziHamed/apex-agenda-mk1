@@ -1,8 +1,15 @@
 "use client";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import CategoryMobileView from "@/components/categoryViews/CategoryMobileView";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
+import EditTask from "@/components/TaskViews/editTask";
 import TaskItem from "@/components/TaskViews/TaskItem";
-
 import { useGettasks } from "@/hooks/useTasks";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2 } from "lucide-react";
@@ -12,9 +19,11 @@ const taskView = () => {
   const isMobile = useUiStore((state) => state.isMobile);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
   const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
+
   const { data: allTasks, isLoading } = useGettasks();
 
   if (isLoading) return <Loader2 className="animate-spin w-5 h-5" />;
+
 
   const filterTasks = () => {
     switch (selectedCategory) {
@@ -35,6 +44,8 @@ const taskView = () => {
     }
   };
 
+   
+
   const filteredTasks = filterTasks();
 
   return (
@@ -44,10 +55,30 @@ const taskView = () => {
         {selectedCategory}
       </h3>
       <ul className="space-y-1">
-        {filteredTasks?.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
+        {selectedCategory !== "Completed"
+          ? filteredTasks
+              ?.filter((item) => !item.completed)
+              .map((task) => <TaskItem task={task} key={task.id} />)
+          : filteredTasks &&
+            filteredTasks.map((task) => <TaskItem task={task} key={task.id} />)}
       </ul>
+      {selectedCategory !== "Completed" && (
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="ps-4">Completed</AccordionTrigger>
+            <AccordionContent>
+              <ul className="space-y-1">
+                {filteredTasks
+                  ?.filter((item) => item.completed)
+                  .map((task) => (
+                    <TaskItem task={task} key={task.id} />
+                  ))}
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
+      <EditTask />
       <AddTaskInput view={selectedCategory} />
     </div>
   );
