@@ -31,7 +31,7 @@ const layout = ({ children, categoryView, taskView }: layoutProps) => {
       {children}
       <footer className="sticky bottom-0 ">
         <div className="h-16 bg-background/80 flex items-center px-15">
-          <div className="grid md:grid-cols-[25%_75%] w-full">
+          <div className="grid md:grid-cols-[25%_75%] w-full gap-2">
             {!isMobile && <AddListDialog />}
             <AddTaskInput />
           </div>

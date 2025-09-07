@@ -13,6 +13,7 @@ import TaskItem from "@/components/TaskViews/TaskItem";
 import { useTaskData } from "@/hooks/useTaskData";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2 } from "lucide-react";
+import CategoryEllipsisbtn from "@/components/ui/CategoryEllipsisbtn";
 
 const TaskView = () => {
   const isMobile = useUiStore((state) => state.isMobile);
@@ -35,9 +36,12 @@ const TaskView = () => {
     <div className="h-full border relative p-2">
       {isMobile && <CategoryMobileView />}
 
-      <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl">
-        {selectedCategory}
-      </h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl">
+          {selectedCategory}
+        </h3>
+        {selectedCategoryId.length > 10 && <CategoryEllipsisbtn />}
+      </div>
 
       <ul className="space-y-1">
         {filteredTasks.active.map((task) => (

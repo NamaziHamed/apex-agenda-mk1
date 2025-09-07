@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -12,26 +12,50 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { categoryFormSchema } from "@/lib/validations";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useCreateCategory } from "@/hooks/useCategory";
+import { useCreateCategory, useUpdateCategory } from "@/hooks/useCategory";
 import { useForm } from "react-hook-form";
+import { useUiStore } from "@/store/uiStore";
+import { toast } from "sonner";
 
-const CategoryForm = ({ onClose }: { onClose: () => void }) => {
-  const { mutate: createCategory, isPending } = useCreateCategory();
+const CategoryForm = ({
+  onClose,
+  editMode,
+}: {
+  onClose: () => void;
+  editMode: boolean;
+}) => {
+  const { mutate: createCategory, isPending: createPending } =
+    useCreateCategory();
+  const { mutate: updateCategory, isPending: updatePending } =
+    useUpdateCategory();
+  const selectedCategory = useUiStore((state) => state.selectedCategory);
+  const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
+
   const form = useForm({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
       title: "",
-      icon: "",
     },
   });
 
+  useEffect(() => {
+    form.reset({ title: selectedCategory });
+  }, [selectedCategory, selectedCategoryId]);
+
   const handleSubmit = (data: { title: string }) => {
-    // Correctly receive the validated data object
-    createCategory(data, {
+    const payload = {
+      title: data.title,
+      categoryId: selectedCategoryId,
+    };
+    const options = {
       onSuccess: () => {
         onClose();
+        editMode
+          ? toast.success("List updated!")
+          : toast.success("New List Created!");
       },
-    });
+    };
+    editMode ? updateCategory(payload, options) : createCategory(data, options);
   };
 
   return (
@@ -50,8 +74,12 @@ const CategoryForm = ({ onClose }: { onClose: () => void }) => {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} className="w-full">
-          Add
+        <Button
+          type="submit"
+          disabled={createPending || updatePending}
+          className="w-full"
+        >
+          {editMode ? "Save" : "Add"}
         </Button>
       </form>
       <Button

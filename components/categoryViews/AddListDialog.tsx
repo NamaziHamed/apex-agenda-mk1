@@ -17,6 +17,7 @@ const AddListDialog = () => {
   const isOpen = useUiStore((state) => state.isCategoryDialogOpen);
   const onOpen = useUiStore((state) => state.setCategoryDialogOpen);
   const onClose = useUiStore((state) => state.setCategoryDialogClose);
+  const isEditMode = useUiStore((state) => state.isEditMode);
 
   const handleOpenChange = () => {
     if (isOpen) {
@@ -25,6 +26,7 @@ const AddListDialog = () => {
       onOpen();
     }
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
@@ -35,10 +37,12 @@ const AddListDialog = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add new List or Group</DialogTitle>
+          <DialogTitle>
+            {isEditMode ? "Edit" : "Add new"} List or Group
+          </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
-        <CategoryForm onClose={onClose} />
+        <CategoryForm onClose={onClose} editMode={isEditMode} />
       </DialogContent>
     </Dialog>
   );

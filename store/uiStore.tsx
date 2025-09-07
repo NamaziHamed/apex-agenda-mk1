@@ -10,6 +10,9 @@ interface uiStoreProps {
   isCategoryDialogOpen: boolean;
   setCategoryDialogClose: () => void;
   setCategoryDialogOpen: () => void;
+  isEditMode: boolean;
+  removeEditMode: () => void;
+  setEditMode: () => void;
 
   selectedCategory: string;
   selectedCategoryId: string;
@@ -31,6 +34,9 @@ export const useUiStore = create<uiStoreProps>((set) => ({
   isCategoryDialogOpen: false,
   setCategoryDialogClose: () => set({ isCategoryDialogOpen: false }),
   setCategoryDialogOpen: () => set({ isCategoryDialogOpen: true }),
+  isEditMode: false,
+  setEditMode: () => set({ isEditMode: true }),
+  removeEditMode: () => set({ isEditMode: false }),
 
   // Category selection variables
   selectedCategory: "Today",

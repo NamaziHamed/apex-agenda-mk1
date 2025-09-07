@@ -1,5 +1,14 @@
-import { createCategory, fetchCategories } from "@/lib/categories";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  createCategory,
+  fetchCategories,
+  updateCategory,
+} from "@/lib/categories";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
@@ -24,6 +33,26 @@ export function useCreateCategory() {
     onError: (error) => {
       const errorMessage = error.message;
       toast.error(errorMessage);
+    },
+  });
+}
+
+export function useUpdateCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      title,
+      categoryId,
+    }: {
+      title: string;
+      categoryId: string;
+    }) => updateCategory(title, categoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 }

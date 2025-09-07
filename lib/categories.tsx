@@ -32,3 +32,16 @@ export async function createCategory(data: { title: string; icon?: string }) {
   }
   return res.json();
 }
+
+export async function updateCategory(title: string, categoryId: string) {
+  const res = await fetch(`/api/categories/${categoryId}/`, {
+    method: "PATCH",
+    body: JSON.stringify({ title }),
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || "Faild to update list");
+  }
+  return res.json();
+}

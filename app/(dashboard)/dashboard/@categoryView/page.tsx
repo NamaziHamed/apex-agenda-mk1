@@ -10,7 +10,6 @@ const categoryView = () => {
       </h2>
       <CategoryViewSect />
       <div className="absolute bottom-2 w-full">
-        <AddListDialog />
       </div>
     </div>
   );
