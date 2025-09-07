@@ -17,8 +17,8 @@ export function useCreateTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { title: string; view: string; categoryId: string }) =>
-      createTask(data.title, data.view, data.categoryId),
+    mutationFn: (data: { title: string; selectedCategory: string; categoryId: string }) =>
+      createTask(data.title, data.selectedCategory, data.categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });

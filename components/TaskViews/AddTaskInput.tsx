@@ -8,18 +8,19 @@ import { TaskPayload, taskPayloadSchema } from "@/lib/validations";
 import { useCreateTask } from "@/hooks/useTasks";
 import { useUiStore } from "@/store/uiStore";
 
-const AddTaskInput = ({ view }: { view: string }) => {
+const AddTaskInput = () => {
   const id = useUiStore((state) => state.selectedCategoryId);
+  const selectedCategory = useUiStore((state) => state.selectedCategory);
   const { mutate: createCategory, isPending } = useCreateTask();
   const [isDiabled, setDisable] = useState(false);
 
   useEffect(() => {
-    if (view === "Planned" || view === "Completed") {
+    if (selectedCategory === "Planned" || selectedCategory === "Completed") {
       setDisable(true);
     } else {
       setDisable(false);
     }
-  }, [view]);
+  }, [selectedCategory]);
 
   const form = useForm({
     resolver: zodResolver(taskPayloadSchema),
@@ -30,7 +31,7 @@ const AddTaskInput = ({ view }: { view: string }) => {
 
   const handleSubmit = (data: TaskPayload) => {
     createCategory(
-      { title: data.title, view, categoryId: id },
+      { title: data.title, selectedCategory, categoryId: id },
       {
         onSuccess: () => {
           form.reset();
@@ -47,7 +48,7 @@ const AddTaskInput = ({ view }: { view: string }) => {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormControl className="absolute bottom-2 w-[97%]">
+              <FormControl>
                 <Input
                   type="text"
                   placeholder="Pay the bills"

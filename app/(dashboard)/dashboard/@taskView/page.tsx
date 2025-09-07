@@ -8,13 +8,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CategoryMobileView from "@/components/categoryViews/CategoryMobileView";
-import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import EditTask from "@/components/TaskViews/editTask";
 import TaskItem from "@/components/TaskViews/TaskItem";
 import { useTaskData } from "@/hooks/useTaskData";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const TaskView = () => {
   const isMobile = useUiStore((state) => state.isMobile);
@@ -65,7 +63,6 @@ const TaskView = () => {
       )}
 
       <EditTask />
-      <AddTaskInput view={selectedCategory} />
     </div>
   );
 };

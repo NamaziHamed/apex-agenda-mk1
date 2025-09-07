@@ -1,5 +1,7 @@
 "use client";
+import AddListDialog from "@/components/categoryViews/AddListDialog";
 import Header from "@/components/header/Header";
+import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useUiStore } from "@/store/uiStore";
 import { MenuIcon } from "lucide-react";
@@ -27,6 +29,14 @@ const layout = ({ children, categoryView, taskView }: layoutProps) => {
         <div>{taskView}</div>
       </div>
       {children}
+      <footer className="sticky bottom-0 ">
+        <div className="h-16 bg-background/80 flex items-center px-15">
+          <div className="grid md:grid-cols-[25%_75%] w-full">
+            {!isMobile && <AddListDialog />}
+            <AddTaskInput />
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

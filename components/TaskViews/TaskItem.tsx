@@ -12,12 +12,23 @@ import { useUpadeTask } from "@/hooks/useTasks";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useTaskDetailsStore } from "@/store/taskDetailsStore";
+import { DateTime } from "luxon";
+import { Badge } from "../ui/badge";
 
 const TaskItem = ({ task }: { task: tasksChemaProps }) => {
   const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
   const setTaskContent = useTaskDetailsStore((state) => state.setTaskContent);
 
   const { mutate: updateTask } = useUpadeTask();
+
+  const isOverdue = () => {
+    if (!task.isToday || !task.setTodayDate || task.completed) return false;
+
+    const date = DateTime.fromISO(task.setTodayDate);
+    const dt = DateTime.now();
+
+    return !date.hasSame(dt, "day");
+  };
 
   const handleCompleteState = () => {
     const newCompletedState = !task.completed;
@@ -62,6 +73,11 @@ const TaskItem = ({ task }: { task: tasksChemaProps }) => {
           </CardTitle>
           <CardDescription>{task.description}</CardDescription>
         </div>
+        {isOverdue() && (
+          <Badge variant={"destructive"} className="text-xs">
+            Overdue
+          </Badge>
+        )}
         <Button
           className="absolute right-3 active:scale-90 transition-all duration-300 "
           variant={"ghost"}
