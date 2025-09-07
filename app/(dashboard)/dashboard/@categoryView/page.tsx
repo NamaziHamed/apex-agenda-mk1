@@ -1,5 +1,4 @@
 import AddListDialog from "@/components/categoryViews/AddListDialog";
-import CategoryItem from "@/components/categoryViews/CategoryItem";
 import CategoryViewSect from "@/components/categoryViews/CategoryViewSect";
 import React from "react";
 

@@ -1,5 +1,6 @@
+// TaskView.tsx
 "use client";
-
+import React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -10,78 +11,63 @@ import CategoryMobileView from "@/components/categoryViews/CategoryMobileView";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import EditTask from "@/components/TaskViews/editTask";
 import TaskItem from "@/components/TaskViews/TaskItem";
-import { useGettasks } from "@/hooks/useTasks";
+import { useTaskData } from "@/hooks/useTaskData";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import { Separator } from "@/components/ui/separator";
 
-const taskView = () => {
+const TaskView = () => {
   const isMobile = useUiStore((state) => state.isMobile);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
   const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
 
-  const { data: allTasks, isLoading } = useGettasks();
+  const { filteredTasks, isLoading } = useTaskData(
+    selectedCategory,
+    selectedCategoryId
+  );
 
-  if (isLoading) return <Loader2 className="animate-spin w-5 h-5" />;
+  if (isLoading) {
+    return <Loader2 className="animate-spin w-5 h-5" />;
+  }
 
-
-  const filterTasks = () => {
-    switch (selectedCategory) {
-      case "Today":
-        return allTasks?.filter((task) => task.isToday);
-      case "Important":
-        return allTasks?.filter((task) => task.isImportant);
-      case "Completed":
-        return allTasks?.filter((task) => task.completed);
-      case "Planned":
-        return allTasks?.filter((task) => task.dueDate);
-      case "All":
-        return allTasks;
-      default:
-        return allTasks?.filter(
-          (task) => task.categoryId === selectedCategoryId
-        );
-    }
-  };
-
-   
-
-  const filteredTasks = filterTasks();
+  const showCompleted =
+    selectedCategory !== "Completed" && filteredTasks.completed.length > 0;
 
   return (
     <div className="h-full border relative p-2">
       {isMobile && <CategoryMobileView />}
+
       <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl">
         {selectedCategory}
       </h3>
+
       <ul className="space-y-1">
-        {selectedCategory !== "Completed"
-          ? filteredTasks
-              ?.filter((item) => !item.completed)
-              .map((task) => <TaskItem task={task} key={task.id} />)
-          : filteredTasks &&
-            filteredTasks.map((task) => <TaskItem task={task} key={task.id} />)}
+        {filteredTasks.active.map((task) => (
+          <TaskItem task={task} key={task.id} />
+        ))}
       </ul>
-      {selectedCategory !== "Completed" && (
+
+      {showCompleted && (
         <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="ps-4">Completed</AccordionTrigger>
+          <AccordionItem value="completed">
+            <AccordionTrigger className="ps-4">
+              Completed ({filteredTasks.completed.length})
+            </AccordionTrigger>
             <AccordionContent>
               <ul className="space-y-1">
-                {filteredTasks
-                  ?.filter((item) => item.completed)
-                  .map((task) => (
-                    <TaskItem task={task} key={task.id} />
-                  ))}
+                {filteredTasks.completed.map((task) => (
+                  <TaskItem task={task} key={task.id} />
+                ))}
               </ul>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       )}
+
       <EditTask />
       <AddTaskInput view={selectedCategory} />
     </div>
   );
 };
 
-export default taskView;
+export default TaskView;
