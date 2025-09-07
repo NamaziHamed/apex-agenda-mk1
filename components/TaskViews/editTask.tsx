@@ -44,13 +44,15 @@ import { DateTime } from "luxon";
 import { useGetCategories } from "@/hooks/useCategory";
 import { useUpadeTask } from "@/hooks/useTasks";
 import { toast } from "sonner";
+import { Badge } from "../ui/badge";
 
 const EditTask = () => {
-  const dt = DateTime.now();
   const [dueDate, setDueDate] = useState(false);
   const isSheetOpen = useTaskDetailsStore((state) => state.isSheetOpen);
   const taskConetent = useTaskDetailsStore((state) => state.taskContent);
   const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
+  const dt = DateTime.now();
+  const [isOverdue, setOverdue] = useState(false);
 
   const { mutate: editTask, status } = useUpadeTask();
 
@@ -89,8 +91,17 @@ const EditTask = () => {
 
   const handleOpenChange = () => {
     setDueDate(false);
+    setOverdue(false);
+    form.reset()
     toggleSheetOpen();
   };
+
+  useEffect(() => {
+    if (form.getValues("setTodayDate")) {
+      const date = DateTime.fromISO(form.getValues("setTodayDate") || "");
+      setOverdue(!date.hasSame(dt, "day"));
+    } else setOverdue(false);
+  }, [taskConetent, isToday]);
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={handleOpenChange}>
@@ -156,6 +167,7 @@ const EditTask = () => {
                 >
                   <Sun />
                   {isToday ? "Remove from today list" : "Add to today list"}
+                  {isOverdue && <Badge variant={"destructive"}>Overdue</Badge>}
                 </DetailsBtn>
 
                 {/* Toggle Completed */}
@@ -205,7 +217,7 @@ const EditTask = () => {
                         <FormControl>
                           <DateTimePicker
                             onChange={field.onChange}
-                            value={isDueDate}
+                            value={isDueDate || ""}
                             onCancel={() => setDueDate(false)}
                           />
                         </FormControl>
