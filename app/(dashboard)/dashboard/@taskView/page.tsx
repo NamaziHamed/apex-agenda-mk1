@@ -1,6 +1,6 @@
 // TaskView.tsx
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -14,12 +14,18 @@ import { useTaskData } from "@/hooks/useTaskData";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2 } from "lucide-react";
 import CategoryEllipsisbtn from "@/components/ui/CategoryEllipsisbtn";
+import { iconMap } from "@/utils/iconSelector";
 
 const TaskView = () => {
   const isMobile = useUiStore((state) => state.isMobile);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
   const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
-
+  const selectedCategoryIcon = useUiStore(
+    (state) => state.selectedCategoryIcon
+  );
+  const IconComponent =
+    iconMap[selectedCategoryIcon as keyof typeof iconMap] ||
+    iconMap.DefaultIcon;
   const { filteredTasks, isLoading } = useTaskData(
     selectedCategory,
     selectedCategoryId
@@ -37,7 +43,9 @@ const TaskView = () => {
       {isMobile && <CategoryMobileView />}
 
       <div className="flex justify-between items-center">
-        <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl">
+        <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl
+        flex gap-2 items-center ms-2">
+          <IconComponent />
           {selectedCategory}
         </h3>
         {selectedCategoryId.length > 10 && <CategoryEllipsisbtn />}

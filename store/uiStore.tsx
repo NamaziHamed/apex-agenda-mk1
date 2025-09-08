@@ -42,9 +42,9 @@ export const useUiStore = create<uiStoreProps>((set) => ({
 
   // Category selection variables
   selectedCategory: "Today",
-  selectedCategoryId: "",
+  selectedCategoryId: "Today",
   setSelectedCategoryId: (id) => set({ selectedCategoryId: id }),
   setSelectedCategory: (title) => set({ selectedCategory: title }),
-  selectedCategoryIcon: "",
+  selectedCategoryIcon: "Sun",
   setSelectedCategoryIcon: (icon) => set({ selectedCategoryIcon: icon }),
 }));
