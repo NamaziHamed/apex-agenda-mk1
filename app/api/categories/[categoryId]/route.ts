@@ -46,14 +46,17 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(req: Request, params: { categoryId: string }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { categoryId: string } }
+) {
   const session = await auth();
   if (!session?.user.id) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
+  const categoryId = params.categoryId;
   try {
-    const categoryId = params.categoryId;
-    await prisma.category.delete({
+    const res = await prisma.category.delete({
       where: { id: categoryId, userId: session.user.id },
     });
     return NextResponse.json(

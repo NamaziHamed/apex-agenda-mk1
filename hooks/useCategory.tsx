@@ -1,5 +1,6 @@
 import {
   createCategory,
+  deleteCategory,
   fetchCategories,
   updateCategory,
 } from "@/lib/categories";
@@ -53,6 +54,23 @@ export function useUpdateCategory() {
     },
     onError: (error) => {
       toast.error(error.message);
+    },
+  });
+}
+
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ categoryId }: { categoryId: string }) =>
+      deleteCategory(categoryId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      toast.success("Category removed successfully!");
+    },
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 }

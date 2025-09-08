@@ -45,3 +45,17 @@ export async function updateCategory(title: string, categoryId: string) {
   }
   return res.json();
 }
+
+export async function deleteCategory(categoryId: string) {
+  const res = await fetch(`/api/categories/${categoryId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) {
+    const error = await res
+      .json()
+      .catch(() => ({ error: "Failed to delete list" }));
+    throw new Error(error.error || "Failed to delete list");
+  }
+  return null;
+}
