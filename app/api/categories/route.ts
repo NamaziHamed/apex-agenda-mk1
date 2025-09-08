@@ -13,25 +13,25 @@ export async function GET(req: Request) {
     }
 
     const categories = await prisma.category.findMany({
-  where: { userId },
-  orderBy: { createdAt: "asc" },
-  select: {
-    id: true,
-    title: true,
-    icon: true,
-    createdAt: true,
-    userId: true,
-    _count: {
+      where: { userId },
+      orderBy: { createdAt: "asc" },
       select: {
-        tasks: {
-          where: {
-            completed: false,
+        id: true,
+        title: true,
+        icon: true,
+        createdAt: true,
+        userId: true,
+        _count: {
+          select: {
+            tasks: {
+              where: {
+                completed: false,
+              },
+            },
           },
         },
       },
-    },
-  },
-});
+    });
     return NextResponse.json(categories, { status: 200 });
   } catch (error) {
     console.error("Error fetching categories:", error);

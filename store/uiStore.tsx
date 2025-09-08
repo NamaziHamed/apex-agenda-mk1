@@ -18,6 +18,8 @@ interface uiStoreProps {
   selectedCategoryId: string;
   setSelectedCategoryId: (id: string) => void;
   setSelectedCategory: (title: string) => void;
+  selectedCategoryIcon: string;
+  setSelectedCategoryIcon: (icon: string) => void;
 }
 
 export const useUiStore = create<uiStoreProps>((set) => ({
@@ -43,4 +45,6 @@ export const useUiStore = create<uiStoreProps>((set) => ({
   selectedCategoryId: "",
   setSelectedCategoryId: (id) => set({ selectedCategoryId: id }),
   setSelectedCategory: (title) => set({ selectedCategory: title }),
+  selectedCategoryIcon: "",
+  setSelectedCategoryIcon: (icon) => set({ selectedCategoryIcon: icon }),
 }));

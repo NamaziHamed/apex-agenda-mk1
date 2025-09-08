@@ -29,7 +29,7 @@ export async function PATCH(
 
     const updatedCategory = await prisma.category.update({
       where: { userId: session.user.id, id: categoryId },
-      data: { title: validatedData.data.title },
+      data: { title: validatedData.data.title, icon: validatedData.data.icon },
     });
 
     return NextResponse.json(

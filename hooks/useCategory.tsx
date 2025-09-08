@@ -4,22 +4,13 @@ import {
   fetchCategories,
   updateCategory,
 } from "@/lib/categories";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useGetCategories() {
-  const { status } = useSession();
-
   return useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
-    enabled: status === "authenticated",
   });
 }
 
@@ -44,11 +35,13 @@ export function useUpdateCategory() {
   return useMutation({
     mutationFn: ({
       title,
+      icon,
       categoryId,
     }: {
       title: string;
+      icon: string;
       categoryId: string;
-    }) => updateCategory(title, categoryId),
+    }) => updateCategory(title, icon , categoryId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },

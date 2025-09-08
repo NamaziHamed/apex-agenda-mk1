@@ -3,7 +3,6 @@ import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
-  credentialsProps,
   registerProps,
   registerSchema,
 } from "@/lib/validations";
@@ -20,7 +19,6 @@ import { Button } from "../ui/button";
 import { registerWithCredentials } from "@/utils/authActions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { z } from "zod";
 
 const RegisterForm = () => {
   const router = useRouter();

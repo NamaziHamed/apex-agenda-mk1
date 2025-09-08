@@ -13,7 +13,7 @@ import { PlusIcon } from "lucide-react";
 import CategoryForm from "../forms/CategoryForm";
 import { useUiStore } from "@/store/uiStore";
 
-const AddListDialog = ({ isMobile }: { isMobile: boolean }) => {
+const AddListDialog = ({ isMobile }: { isMobile?: boolean }) => {
   const isOpen = useUiStore((state) => state.isCategoryDialogOpen);
   const onOpen = useUiStore((state) => state.setCategoryDialogOpen);
   const onClose = useUiStore((state) => state.setCategoryDialogClose);
@@ -28,12 +28,17 @@ const AddListDialog = ({ isMobile }: { isMobile: boolean }) => {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      aria-hidden={isEditMode ? "Edit list" : "Add new list"}
+    >
       <DialogTrigger asChild>
         <Button
           variant={"ghost"}
           onClick={onOpen}
-          className={`${isMobile ? "hidden" : "inline-block"}`}
+          className={`${isMobile ? "hidden" : "flex items-center"}
+          `}
         >
           <PlusIcon />
           <span>Add list</span>

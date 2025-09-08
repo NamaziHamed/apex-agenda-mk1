@@ -33,10 +33,14 @@ export async function createCategory(data: { title: string; icon?: string }) {
   return res.json();
 }
 
-export async function updateCategory(title: string, categoryId: string) {
+export async function updateCategory(
+  title: string,
+  icon: string,
+  categoryId: string
+) {
   const res = await fetch(`/api/categories/${categoryId}/`, {
     method: "PATCH",
-    body: JSON.stringify({ title }),
+    body: JSON.stringify({ title, icon }),
     headers: { "Content-Type": "application/json" },
   });
   if (!res.ok) {

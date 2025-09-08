@@ -22,6 +22,7 @@ const CategoryItem = ({ item }: { item: Category }) => {
   const isMobile = useUiStore((state) => state.isMobile);
   const closeDialog = useUiStore((state) => state.toggleDashboardExpanded);
   const setCategoryId = useUiStore((state) => state.setSelectedCategoryId);
+  const setSelectedIcon = useUiStore((state) => state.setSelectedCategoryIcon);
 
   // Dynamic icon selection
   const getIcon = () => {
@@ -29,12 +30,12 @@ const CategoryItem = ({ item }: { item: Category }) => {
     if (item.icon && staticIconMap[item.icon]) {
       return staticIconMap[item.icon];
     }
-    
+
     // For dynamic icons, convert icon name to PascalCase and get from icons object
     if (item.icon && icons[item.icon as keyof typeof icons]) {
       return icons[item.icon as keyof typeof icons];
     }
-    
+
     // Default icon
     return icons.Folder;
   };
@@ -44,6 +45,7 @@ const CategoryItem = ({ item }: { item: Category }) => {
   const handleCategorySelection = () => {
     setCategory(item.title);
     setCategoryId(item.id);
+    setSelectedIcon(item.icon || "");
     isMobile && closeDialog();
   };
 
