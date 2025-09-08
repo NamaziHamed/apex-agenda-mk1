@@ -38,11 +38,12 @@ import {
   Loader2,
   Star,
   Sun,
+  Trash2,
 } from "lucide-react";
 import { DateTimePicker } from "../ui/DateTimePicker";
 import { DateTime } from "luxon";
 import { useGetCategories } from "@/hooks/useCategory";
-import { useUpadeTask } from "@/hooks/useTasks";
+import { useDeleteTask, useUpadeTask } from "@/hooks/useTasks";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
 
@@ -54,7 +55,8 @@ const EditTask = () => {
   const dt = DateTime.now();
   const [isOverdue, setOverdue] = useState(false);
 
-  const { mutate: editTask, status } = useUpadeTask();
+  const { mutate: editTask, status: EditStatus } = useUpadeTask();
+  const { mutate: deleteTask, status: deleteStatus } = useDeleteTask();
 
   const form = useForm({
     resolver: zodResolver(editTaskSchema),
@@ -92,7 +94,7 @@ const EditTask = () => {
   const handleOpenChange = () => {
     setDueDate(false);
     setOverdue(false);
-    form.reset()
+    form.reset();
     toggleSheetOpen();
   };
 
@@ -102,6 +104,12 @@ const EditTask = () => {
       setOverdue(!date.hasSame(dt, "day"));
     } else setOverdue(false);
   }, [taskConetent, isToday]);
+
+  const handleDeleteTask = () => {
+    deleteTask({ taskId: form.getValues("id") },{
+      onSuccess:()=>handleOpenChange()
+    });
+  };
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={handleOpenChange}>
@@ -264,14 +272,31 @@ const EditTask = () => {
             type="submit"
             className="w-full "
             form="task-form"
-            disabled={status === "pending"}
+            disabled={(EditStatus || deleteStatus) === "pending"}
           >
-            {status === "pending" ? (
+            {EditStatus === "pending" ? (
               <>
                 <Loader2 className="animate-spin" /> Updating...
               </>
             ) : (
               "Save"
+            )}
+          </Button>
+          <Button
+            className="flex gap-3"
+            variant={"destructive"}
+            onClick={handleDeleteTask}
+            disabled={(EditStatus || deleteStatus) === "pending"}
+          >
+            {deleteStatus !== "pending" ? (
+              <Trash2 />
+            ) : (
+              <Loader2 className="animate-spin" />
+            )}
+            {deleteStatus !== "pending" ? (
+              <span>Delete</span>
+            ) : (
+              <span>Removing...</span>
             )}
           </Button>
           <SheetClose>Cancel</SheetClose>

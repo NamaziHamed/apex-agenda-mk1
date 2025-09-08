@@ -80,3 +80,14 @@ export async function updateTask(data: any, taskId: string) {
 
   return res.json();
 }
+
+export async function deleteTask(taskId: string) {
+  const res = await fetch(`/api/tasks/${taskId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    throw new Error("Delete failed, try again!");
+  }
+
+  return res.json();
+}
