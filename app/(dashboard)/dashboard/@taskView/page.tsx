@@ -38,13 +38,16 @@ const TaskView = () => {
   const showCompleted =
     selectedCategory !== "Completed" && filteredTasks.completed.length > 0;
 
+
   return (
     <div className="h-full border relative p-2">
       {isMobile && <CategoryMobileView />}
 
       <div className="flex justify-between items-center">
-        <h3 className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl
-        flex gap-2 items-center ms-2">
+        <h3
+          className="text-blue-500 font-semibold text-2xl mb-4 md:text-3xl lg:text-4xl
+        flex gap-2 items-center ms-2"
+        >
           <IconComponent />
           {selectedCategory}
         </h3>

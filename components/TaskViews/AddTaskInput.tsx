@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import { useCreateTask } from "@/hooks/useTasks";
 import { useUiStore } from "@/store/uiStore";
 
 const AddTaskInput = () => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const id = useUiStore((state) => state.selectedCategoryId);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
   const { mutate: createCategory, isPending } = useCreateTask();
@@ -29,12 +30,25 @@ const AddTaskInput = () => {
     },
   });
 
+  const focusGainer = () => {
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+    }, 500);
+  };
+
+  useEffect(() => {
+    focusGainer();
+  }, [selectedCategory, isDiabled]);
+
   const handleSubmit = (data: TaskPayload) => {
     createCategory(
       { title: data.title, selectedCategory, categoryId: id },
       {
         onSuccess: () => {
           form.reset();
+          requestAnimationFrame(() => inputRef.current?.focus());
         },
       }
     );
@@ -54,6 +68,10 @@ const AddTaskInput = () => {
                   placeholder="Pay the bills"
                   {...field}
                   disabled={isPending || isDiabled}
+                  ref={(el) => {
+                    field.ref(el);
+                    inputRef.current = el;
+                  }}
                 />
               </FormControl>
             </FormItem>
