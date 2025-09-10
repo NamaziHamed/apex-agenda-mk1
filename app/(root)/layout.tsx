@@ -5,12 +5,10 @@ import { Toaster } from "sonner";
 const layout = ({ children }: { children: ReactNode }) => {
   return (
     <div className="min-h-screen">
-      <header>
+      <header className="fixed top-0 z-50 w-full ">
         <Header />
       </header>
-      <main className="flex-1 sm:flex sm:justify-center sm:items-center sm:flex-col items-stretch">
-        {children}
-      </main>
+      {children}
     </div>
   );
 };
