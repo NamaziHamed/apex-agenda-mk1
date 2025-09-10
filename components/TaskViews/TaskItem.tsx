@@ -84,7 +84,7 @@ const TaskItem = ({ task }: { task: tasksChemaProps }) => {
           onClick={handleImportantState}
         >
           <StarIcon
-            fill={task.isImportant ? "#fca5a5" : ""}
+            fill={task.isImportant ? "#fca5a5" : "#ffffff"}
             className={cn(
               "",
               task.isImportant ? "text-red-300 " : "text-card-foreground"
