@@ -2,9 +2,9 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { Category } from "@/types/categoryTypes";
 import { useUiStore } from "@/store/uiStore";
 import { LucideIcon, icons } from "lucide-react";
+import { Categories } from "@/types/categoryTypes";
 
 // Static views mapping
 const staticIconMap: Record<string, LucideIcon> = {
@@ -16,7 +16,7 @@ const staticIconMap: Record<string, LucideIcon> = {
   Tasks: icons.List,
 };
 
-const CategoryItem = ({ item }: { item: Category }) => {
+const CategoryItem = ({ item }: { item: Categories }) => {
   const setCategory = useUiStore((state) => state.setSelectedCategory);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
   const isMobile = useUiStore((state) => state.isMobile);
@@ -46,7 +46,7 @@ const CategoryItem = ({ item }: { item: Category }) => {
     setCategory(item.title);
     setCategoryId(item.id);
     setSelectedIcon(item.icon || "");
-    isMobile && closeDialog();
+   if(isMobile) closeDialog();
   };
 
   return (
@@ -59,7 +59,7 @@ const CategoryItem = ({ item }: { item: Category }) => {
         <ViewIcon className="h-4 w-4" />
         <span className="truncate">{item.title}</span>
       </div>
-      <Badge variant={"default"}>{item._count?.tasks || 0}</Badge>
+      <Badge variant={"default"}>{item._count.tasks}</Badge>
     </Button>
   );
 };

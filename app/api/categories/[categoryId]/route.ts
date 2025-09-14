@@ -6,7 +6,7 @@ import z from "zod";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { categoryId: string } }
+  context: { params: Promise<{ categoryId: string }> }
 ) {
   const session = await auth();
 
@@ -14,7 +14,7 @@ export async function PATCH(
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const categoryId = params.categoryId;
+  const categoryId = (await context.params).categoryId;
 
   try {
     const body = await req.json();
@@ -48,15 +48,15 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { categoryId: string } }
+  context: { params: Promise<{ categoryId: string }> }
 ) {
   const session = await auth();
   if (!session?.user.id) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-  const categoryId = params.categoryId;
+  const categoryId = (await context.params).categoryId;
   try {
-    const res = await prisma.category.delete({
+    await prisma.category.delete({
       where: { id: categoryId, userId: session.user.id },
     });
     return NextResponse.json(
@@ -65,7 +65,7 @@ export async function DELETE(
     );
   } catch (error) {
     return NextResponse.json(
-      { message: "Internal Server error!" },
+      { message: "Internal Server error!", error },
       { status: 500 }
     );
   }

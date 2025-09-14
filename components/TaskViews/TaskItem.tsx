@@ -7,28 +7,30 @@ import {
 } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { StarIcon } from "lucide-react";
-import { tasksChemaProps } from "@/lib/validations";
 import { useUpadeTask } from "@/hooks/useTasks";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { useTaskDetailsStore } from "@/store/taskDetailsStore";
 import { DateTime } from "luxon";
 import { Badge } from "../ui/badge";
+import { Tasks } from "@/types/categoryTypes";
 
-const TaskItem = ({ task }: { task: tasksChemaProps }) => {
+const TaskItem = ({ task }: { task: Tasks }) => {
   const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
   const setTaskContent = useTaskDetailsStore((state) => state.setTaskContent);
 
   const { mutate: updateTask } = useUpadeTask();
 
-  const isOverdue = () => {
-    if (!task.isToday || !task.setTodayDate || task.completed) return false;
 
-    const date = DateTime.fromISO(task.setTodayDate);
-    const dt = DateTime.now();
+const isOverdue = () => {
+  if (!task.isToday || !task.setTodayDate || task.completed) return false;
 
-    return !date.hasSame(dt, "day");
-  };
+  const taskDateUTC = DateTime.fromJSDate(task.setTodayDate);
+  const taskDateLocal = taskDateUTC.toLocal();
+  const startOfToday = DateTime.local().startOf('day');
+
+  return taskDateLocal < startOfToday;
+};
 
   const handleCompleteState = () => {
     const newCompletedState = !task.completed;
@@ -47,10 +49,10 @@ const TaskItem = ({ task }: { task: tasksChemaProps }) => {
     updateTask({ data: { isImportant: !task.isImportant }, taskId: task.id });
   };
 
-  const handleCardClick = (e: any) => {
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (
-      e.target.closest("button") ||
-      e.target.closest('input[type="checkbox"]')
+      (e.target as HTMLElement).closest("button") ||
+      (e.target as HTMLElement).closest('input[type="checkbox"]')
     )
       return;
     setTaskContent(task);

@@ -31,7 +31,7 @@ export function DateTimePicker({
       setDate(dt.toJSDate());
       setTime(dt.toFormat("HH:mm:ss"));
     }
-  }, []);
+  }, [value]);
 
   React.useEffect(() => {
     if (date && time) {
@@ -44,7 +44,7 @@ export function DateTimePicker({
 
       onChange(combinedDateTime.toISO());
     }
-  }, [date, time]);
+  }, [date, time, onChange]);
 
   return (
     <div className="flex gap-4">

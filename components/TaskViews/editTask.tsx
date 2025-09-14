@@ -42,16 +42,17 @@ import {
 } from "lucide-react";
 import { DateTimePicker } from "../ui/DateTimePicker";
 import { DateTime } from "luxon";
-import { useGetCategories } from "@/hooks/useCategory";
 import { useDeleteTask, useUpadeTask } from "@/hooks/useTasks";
 import { toast } from "sonner";
 import { Badge } from "../ui/badge";
+import { useTaskDataStore } from "@/store/taskDataStore";
 
 const EditTask = () => {
   const [dueDate, setDueDate] = useState(false);
   const isSheetOpen = useTaskDetailsStore((state) => state.isSheetOpen);
   const taskConetent = useTaskDetailsStore((state) => state.taskContent);
   const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
+  const categories = useTaskDataStore((state) => state.categories);
   const dt = DateTime.now();
   const [isOverdue, setOverdue] = useState(false);
 
@@ -65,10 +66,33 @@ const EditTask = () => {
     },
   });
 
-  useEffect(() => {
-    form.reset(taskConetent);
-    setDueDate(false);
-  }, [taskConetent, form.reset]);
+
+useEffect(() => {
+  if (taskConetent) {
+
+    const formValues = {
+      id: taskConetent.id,
+      title: taskConetent.title || "",
+      description: taskConetent.description || null,
+
+      reminder: taskConetent.reminder ? new Date(taskConetent.reminder).toISOString() : null,
+      dueDate: taskConetent.dueDate ? new Date(taskConetent.dueDate).toISOString() : null,
+      completedAt: taskConetent.completedAt ? new Date(taskConetent.completedAt).toISOString() : null,
+      setTodayDate: taskConetent.setTodayDate ? new Date(taskConetent.setTodayDate).toISOString() : null,
+
+      isImportant: taskConetent.isImportant || false,
+      completed: taskConetent.completed || false,
+      isToday: taskConetent.isToday || false,
+      categoryId: taskConetent.categoryId || null,
+    };
+
+    console.log("Values being sent to form.reset():", formValues);
+
+    form.reset(formValues);
+    
+    setDueDate(!!taskConetent.dueDate);
+  }
+}, [taskConetent, form]);
 
   const onSubmit = (data: editTaskProps) => {
     editTask(
@@ -81,9 +105,6 @@ const EditTask = () => {
       }
     );
   };
-
-  // loading categories
-  const { data: categories, isLoading } = useGetCategories();
 
   // controlling form values upon change before submit
   const isCompleted = useWatch({ control: form.control, name: "completed" });
@@ -103,12 +124,15 @@ const EditTask = () => {
       const date = DateTime.fromISO(form.getValues("setTodayDate") || "");
       setOverdue(!date.hasSame(dt, "day"));
     } else setOverdue(false);
-  }, [taskConetent, isToday]);
+  }, [taskConetent, isToday, form, dt]);
 
   const handleDeleteTask = () => {
-    deleteTask({ taskId: form.getValues("id") },{
-      onSuccess:()=>handleOpenChange()
-    });
+    deleteTask(
+      { taskId: form.getValues("id") },
+      {
+        onSuccess: () => handleOpenChange(),
+      }
+    );
   };
 
   return (

@@ -20,9 +20,9 @@ import { useSession } from "next-auth/react";
 
 const LoginForm = () => {
   const router = useRouter();
-  const { data: session, update } = useSession();
+  const { update } = useSession();
 
-  const form = useForm({
+  const form = useForm<credentialsProps>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: {
       email: "",
@@ -36,8 +36,10 @@ const LoginForm = () => {
       await update();
       toast.success(`Logged in with ${data.email}`);
       router.push("/dashboard");
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else toast.error("Something went wrong");
     }
   };
 

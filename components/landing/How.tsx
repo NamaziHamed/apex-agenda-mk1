@@ -1,4 +1,4 @@
-import { AlarmClock, FastForward, Feather, Notebook, Star } from "lucide-react";
+import { AlarmClock,  Notebook, Star } from "lucide-react";
 import {
   Card,
   CardContent,

@@ -2,10 +2,7 @@
 import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import {
-  registerProps,
-  registerSchema,
-} from "@/lib/validations";
+import { registerProps, registerSchema } from "@/lib/validations";
 import {
   Form,
   FormControl,
@@ -23,7 +20,7 @@ import { toast } from "sonner";
 const RegisterForm = () => {
   const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<registerProps>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
@@ -38,8 +35,10 @@ const RegisterForm = () => {
       await registerWithCredentials(data);
       toast.success("Account created successfully!");
       router.push("/login");
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else toast.error("Something went wrong");
     }
   };
 

@@ -1,12 +1,13 @@
 import { tasksChemaProps } from "@/lib/validations";
+import { Tasks } from "@/types/categoryTypes";
 import { create } from "zustand";
 
 interface useTaskDetailsStoreProps {
   isSheetOpen: boolean;
   toggleSheetOpen: () => void;
   sheetClose: () => void;
-  taskContent: tasksChemaProps | undefined;
-  setTaskContent: (task: tasksChemaProps) => void;
+  taskContent: Tasks | undefined;
+  setTaskContent: (task: Tasks) => void;
   removeTaskContent: () => void;
 }
 

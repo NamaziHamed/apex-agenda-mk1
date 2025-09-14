@@ -1,6 +1,6 @@
-import { Category } from "@/types/categoryTypes";
+import { Categories } from "@/types/categoryTypes";
 
-export async function fetchCategories(): Promise<Category[]> {
+export async function fetchCategories(): Promise<Categories[]> {
   const res = await fetch("/api/categories", {
     credentials: "include",
     headers: {
@@ -35,7 +35,7 @@ export async function createCategory(data: { title: string; icon?: string }) {
 
 export async function updateCategory(
   title: string,
-  icon: string,
+  icon: string | undefined,
   categoryId: string
 ) {
   const res = await fetch(`/api/categories/${categoryId}/`, {

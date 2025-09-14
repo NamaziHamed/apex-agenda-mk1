@@ -9,7 +9,6 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Separator } from "../ui/separator";
-import CategoryItem from "./CategoryItem";
 import AddListDialog from "./AddListDialog";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";

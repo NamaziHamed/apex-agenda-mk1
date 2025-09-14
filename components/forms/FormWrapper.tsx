@@ -1,5 +1,4 @@
 import React, { ReactNode } from "react";
-import RegisterForm from "@/components/forms/RegisterForm";
 import { Separator } from "@/components/ui/separator";
 import { ArrowBigRight } from "lucide-react";
 import Link from "next/link";
@@ -47,7 +46,7 @@ const FormWrapper = ({
       >
         {isLogin ? (
           <>
-            Don't have an account? register{" "}
+            Don&apos;t have an account? register
             <ArrowBigRight className="h-4 w-4" />
           </>
         ) : (

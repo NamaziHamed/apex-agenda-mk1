@@ -3,9 +3,8 @@ import AddListDialog from "@/components/categoryViews/AddListDialog";
 import Header from "@/components/header/Header";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useUiStore } from "@/store/uiStore";
 import { MenuIcon } from "lucide-react";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode } from "react";
 
 interface layoutProps {
   children: ReactNode;
@@ -13,7 +12,7 @@ interface layoutProps {
   categoryView: ReactNode;
 }
 
-const layout = ({ children, categoryView, taskView }: layoutProps) => {
+const Layout = ({ children, categoryView, taskView }: layoutProps) => {
   const { matches: isMobile, isLoading } = useMediaQuery();
 
   if (isLoading) return <MenuIcon className="w-3 h-3" />;
@@ -41,4 +40,4 @@ const layout = ({ children, categoryView, taskView }: layoutProps) => {
   );
 };
 
-export default layout;
+export default Layout;

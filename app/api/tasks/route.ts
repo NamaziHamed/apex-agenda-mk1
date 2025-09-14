@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { taskPayloadSchema } from "@/lib/validations";
 import { NextResponse } from "next/server";
 
-export async function GET(_: Request) {
+export async function GET() {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -19,7 +19,7 @@ export async function GET(_: Request) {
     return NextResponse.json(res, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { message: "Internal Server Error", error },
       { status: 500 }
     );
   }
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     return NextResponse.json(newTask, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { message: "Internal Server Error", error },
       { status: 500 }
     );
   }

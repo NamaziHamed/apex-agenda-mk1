@@ -1,20 +1,16 @@
+import { userData } from "@/types/categoryTypes";
 import { tasksChemaProps } from "./validations";
 
-export async function fetchTasks(): Promise<tasksChemaProps[]> {
-  const res = await fetch("/api/tasks", {
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export async function fetchUserData(): Promise<userData> {
+  const res = await fetch("/api/userdata");
 
   if (!res.ok) {
     let errorMessage = `Error ${res.status}: ${res.statusText}`;
     try {
       const errorBody = await res.json();
       errorMessage = errorBody.error || errorMessage;
-    } catch (e) {
-      // If parsing the error body fails, we just use the default message
+    } catch {
+      throw new Error("Internal server error!");
     }
     throw new Error(errorMessage);
   }
@@ -67,7 +63,7 @@ export async function createTask(
   return res.json();
 }
 
-export async function updateTask(data: any, taskId: string) {
+export async function updateTask(data: tasksChemaProps, taskId: string) {
   const res = await fetch(`/api/tasks/${taskId}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -12,9 +12,19 @@ import { Loader2, LogIn, LogOut, User2 } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 const CustomAvatar = () => {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (localStorage.getItem("showWelcomeToast") === "true" && session) {
+      setTimeout(() => {
+        toast.success(`Welcome back, ${session?.user?.name}!`);
+        localStorage.removeItem("showWelcomeToast");
+      }, 100);
+    }
+  }, [session]);
 
   if (pathname === "/login" || pathname === "/register") return null;
 

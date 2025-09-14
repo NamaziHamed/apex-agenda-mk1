@@ -1,15 +1,11 @@
-import { createTask, deleteTask, fetchTasks, updateTask } from "@/lib/tasks";
+import { createTask, deleteTask, fetchUserData, updateTask } from "@/lib/tasks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 
-export function useGettasks() {
-  const { status } = useSession();
-
+export function useGetUserData() {
   return useQuery({
-    queryKey: ["tasks"],
-    queryFn: fetchTasks,
-    enabled: status === "authenticated",
+    queryFn: fetchUserData,
+    queryKey: ["userData"],
   });
 }
 
@@ -23,8 +19,7 @@ export function useCreateTask() {
       categoryId: string;
     }) => createTask(data.title, data.selectedCategory, data.categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
     },
     onError: (error) => {
       const errorMessage = error.message;
@@ -39,11 +34,15 @@ export function useDeleteTask() {
   return useMutation({
     mutationFn: ({ taskId }: { taskId: string }) => deleteTask(taskId),
     onMutate: async ({ taskId }) => {
-      await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      const prevTasks = queryClient.getQueryData(["tasks"]);
+      await queryClient.cancelQueries({ queryKey: ["userData"] });
+      const prevTasks = queryClient.getQueryData(["userData"]);
 
-      queryClient.setQueriesData({ queryKey: ["tasks"] }, (old: any) => {
-        return old.filter((task: any) => task.id !== taskId);
+      queryClient.setQueriesData({ queryKey: ["userData"] }, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          tasks: old.tasks.filter((task: any) => task.id !== taskId),
+        };
       });
 
       return { prevTasks };
@@ -51,11 +50,13 @@ export function useDeleteTask() {
     onError: (error, newTask, context) => {
       const errorMessage = error.message;
       toast.error(errorMessage);
-      queryClient.setQueriesData({ queryKey: ["tasks"] }, context?.prevTasks);
+      queryClient.setQueriesData(
+        { queryKey: ["userData"] },
+        context?.prevTasks
+      );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
     },
   });
 }
@@ -66,13 +67,17 @@ export function useUpadeTask() {
     mutationFn: ({ data, taskId }: { data: any; taskId: string }) =>
       updateTask(data, taskId),
     onMutate: async ({ data, taskId }) => {
-      await queryClient.cancelQueries({ queryKey: ["tasks"] });
-      const prevTasks = queryClient.getQueryData(["tasks"]);
+      await queryClient.cancelQueries({ queryKey: ["userData"] });
+      const prevTasks = queryClient.getQueryData(["userData"]);
 
-      queryClient.setQueriesData({ queryKey: ["tasks"] }, (old: any) => {
-        return old.map((task: any) =>
-          task.id === taskId ? { ...task, ...data } : task
-        );
+      queryClient.setQueriesData({ queryKey: ["userData"] }, (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          tasks: old.tasks.map((task: any) =>
+            task.id === taskId ? { ...task, ...data } : task
+          ),
+        };
       });
 
       return { prevTasks };
@@ -80,11 +85,13 @@ export function useUpadeTask() {
     onError: (error, newTask, context) => {
       const errorMessage = error.message;
       toast.error(errorMessage);
-      queryClient.setQueriesData({ queryKey: ["tasks"] }, context?.prevTasks);
+      queryClient.setQueriesData(
+        { queryKey: ["userData"] },
+        context?.prevTasks
+      );
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
     },
   });
 }

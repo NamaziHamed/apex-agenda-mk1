@@ -21,7 +21,6 @@ import {
   BookOpen,
   Briefcase,
   Building,
-  Coffee,
   Handshake,
   HeartPlus,
   Lightbulb,
@@ -65,24 +64,31 @@ const CategoryForm = ({
       console.log(icon);
       form.reset({ title: selectedCategory, icon: icon });
     }
-  }, [selectedCategory, selectedCategoryId, icon]);
+  }, [selectedCategory, selectedCategoryId, icon, editMode, form]);
 
-  const handleSubmit = (data: { title: string; icon?: string | undefined }) => {
+  const handleSubmit = (data: { title: string; icon?: string }) => {
     const payload = {
       title: data.title,
-      icon: data.icon,
+      icon: data.icon ?? "",
       categoryId: selectedCategoryId,
     };
     const options = {
       onSuccess: () => {
         removeEditMode();
         onClose();
-        editMode
-          ? toast.success("List updated!")
-          : toast.success("New List Created!");
+        if (editMode) {
+          toast.success("List updated!");
+        } else {
+          toast.success("New List Created!");
+        }
       },
     };
-    editMode ? updateCategory(payload, options) : createCategory(data, options);
+
+    if (editMode) {
+      updateCategory(payload, options);
+    } else {
+      createCategory(data, options);
+    }
   };
 
   const iconMap = [

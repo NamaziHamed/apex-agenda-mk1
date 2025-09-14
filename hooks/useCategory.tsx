@@ -1,18 +1,10 @@
 import {
   createCategory,
   deleteCategory,
-  fetchCategories,
   updateCategory,
 } from "@/lib/categories";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-export function useGetCategories() {
-  return useQuery({
-    queryKey: ["categories"],
-    queryFn: fetchCategories,
-  });
-}
 
 export function useCreateCategory() {
   const queryClient = useQueryClient();
@@ -20,7 +12,7 @@ export function useCreateCategory() {
   return useMutation({
     mutationFn: createCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
     },
     onError: (error) => {
       const errorMessage = error.message;
@@ -41,9 +33,9 @@ export function useUpdateCategory() {
       title: string;
       icon: string;
       categoryId: string;
-    }) => updateCategory(title, icon , categoryId),
+    }) => updateCategory(title, icon, categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -58,8 +50,8 @@ export function useDeleteCategory() {
     mutationFn: ({ categoryId }: { categoryId: string }) =>
       deleteCategory(categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
+      queryClient.invalidateQueries({ queryKey: ["userData"] });
       toast.success("Category removed successfully!");
     },
     onError: (err) => {
