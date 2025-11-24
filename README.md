@@ -3,7 +3,6 @@
 **Stop managing your time. Start mastering it.**
 
 ![App Screenshot](./public/screenshot.png)
-_(Replace this text with your actual screenshot path, e.g., /public/dashboard.png)_
 
 ## 📖 About
 
@@ -83,4 +82,4 @@ Apex Agenda is a robust, full-stack task management application designed to hand
 
 ---
 
-_Built by Hamed Namazi_
+**_Built by Hamed Namazi_**
