@@ -6,11 +6,13 @@ import React from "react";
 
 const page = () => {
   return (
-    <div>
+    <div className="pt-20 lg:pt-24">
       <Hero />
-      <Features />
-      <How />
-      <Demo />
+      <div className="max-w-7xl m-auto flex flex-col gap-20 lg:gap-32">
+        <Features />
+        <How />
+        <Demo />
+      </div>
     </div>
   );
 };
