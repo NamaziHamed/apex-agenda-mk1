@@ -1,6 +1,13 @@
 import { Categories, Tasks } from "@/types/categoryTypes";
 import { create } from "zustand";
 
+const isDateToday = (dateString: Date | string | null) => {
+  if (!dateString) return false;
+  const d = new Date(dateString);
+  const today = new Date();
+  return d.toDateString() === today.toDateString();
+};
+
 interface TaskProps {
   today: {
     active: Tasks[];
@@ -57,16 +64,38 @@ export const useTaskDataStore = create<TaskCountStore>((set) => ({
     all: { active: [], completed: [] },
   },
   categories: [],
-  updateTasks: (tasks) => set({ tasks }),
+  updateTasks: (incomingTasks) => {
+    const calculatedToday = {
+      active: incomingTasks.all.active.filter(
+        (task) => task.isToday === true || isDateToday(task.dueDate)
+      ),
+      completed: incomingTasks.all.completed.filter(
+        (task) => task.isToday === true || isDateToday(task.dueDate)
+      ),
+    };
+
+    set({
+      tasks: {
+        ...incomingTasks,
+        today: calculatedToday,
+      },
+    });
+  },
   updateCategories: (categories) => set({ categories }),
   updateCounts: () =>
-    set((state) => ({
-      counts: {
-        today: state.tasks.today.active.length,
-        important: state.tasks.important.active.length,
-        planned: state.tasks.planned.active.length,
-        completed: state.tasks.completed.active.length,
-        all: state.tasks.all.active.length,
-      },
-    })),
+    set((state) => {
+      const realTodayCount = state.tasks.all.active.filter(
+        (task) => task.isToday === true || isDateToday(task.dueDate)
+      ).length;
+
+      return {
+        counts: {
+          today: realTodayCount,
+          important: state.tasks.important.active.length,
+          planned: state.tasks.planned.active.length,
+          completed: state.tasks.completed.active.length,
+          all: state.tasks.all.active.length,
+        },
+      };
+    }),
 }));

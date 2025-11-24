@@ -9,7 +9,7 @@ const CategoryViewSect = () => {
   const categories = useTaskDataStore((state) => state.categories);
   const counts = useTaskDataStore((state) => state.counts);
 
-  const [views, setViews] = useState<Categories[]>([]); // initialize with zeros
+  const [views, setViews] = useState<Categories[]>([]); 
 
   useEffect(() => {
     setViews([

@@ -38,24 +38,24 @@ const CustomAvatar = () => {
       </Button>
     );
 
+  console.log("Debug", session?.user.image);
+
   if (status === "loading") return <Loader2 className="animate-spin" />;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="cursor-pointer">
         <Avatar>
-          {session?.user?.image ? (
-            <AvatarImage src={session?.user?.image} />
-          ) : (
-            <AvatarFallback asChild>
-              <Button
-                variant={"outline"}
-                className="flex items-center
-              cursor-pointer"
-              >
-                <User2 />
-              </Button>
-            </AvatarFallback>
+          {session?.user && (
+            <>
+              <AvatarImage
+                src={session?.user?.image || ""}
+                referrerPolicy="no-referrer"
+              />
+              <AvatarFallback>
+                {session.user.name?.slice(0, 2).toUpperCase() || <User2 />}
+              </AvatarFallback>
+            </>
           )}
         </Avatar>
       </DropdownMenuTrigger>
