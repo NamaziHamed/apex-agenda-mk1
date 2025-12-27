@@ -1,20 +1,18 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { prisma } from "./lib/prisma";
-import { credentialsSchema } from "./lib/validations";
-import { predefinedViews } from "./utils/predefined";
+import NextAuth from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import { prisma } from "./lib/prisma"
+import Credentials from "next-auth/providers/credentials"
+import bcrypt from "bcryptjs"
+import { credentialsSchema } from "./lib/validations"
+import { predefinedViews } from "./utils/predefined"
+import authConfig from "./auth.config" // <--- Import the edge config
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig, // <--- Spread the edge config here
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
+    ...authConfig.providers, // <--- Merge Google from config
     Credentials({
       credentials: {},
       async authorize(credentials) {
@@ -53,20 +51,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       });
     },
   },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.email = user.email;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.email = token.email as string;
-      }
-      return session;
-    },
-  },
-});
+})
