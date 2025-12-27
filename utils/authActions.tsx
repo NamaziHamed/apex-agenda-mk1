@@ -1,8 +1,10 @@
 "use server";
+
 import { signIn } from "@/auth";
 import { credentialsProps, registerSchema } from "@/lib/validations";
 import { AuthError } from "next-auth";
-import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma"; // Import prisma directly
+import bcrypt from "bcryptjs"; // You'll need this for hashing
 
 export async function signInWithGoogle() {
   await signIn("google");
@@ -23,19 +25,31 @@ export async function signInWithCredentials(data: credentialsProps) {
   }
 }
 
+// ✅ FIXED: No more fetch() to localhost
 export async function registerWithCredentials(data: credentialsProps) {
   const validatedData = registerSchema.parse(data);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${baseUrl}/api/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(validatedData),
+
+  // 1. Check if user exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email: validatedData.email },
   });
 
-  if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || "Registration failed.");
+  if (existingUser) {
+    throw new Error("User already exists");
   }
 
-  return res.json();
+  // 2. Hash password
+  const hashedPassword = await bcrypt.hash(validatedData.password, 10);
+
+  // 3. Create user
+  const newUser = await prisma.user.create({
+    data: {
+      name: validatedData.name, // Ensure your schema has a name field if you use it
+      email: validatedData.email,
+      password: hashedPassword,
+    },
+  });
+
+  // Optional: You can return the user (excluding password) or just a success message
+  return { success: true, userId: newUser.id };
 }
