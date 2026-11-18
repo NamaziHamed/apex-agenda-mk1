@@ -1,19 +1,38 @@
-import type { Metadata } from "next";
-import { Roboto } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers/Providers";
 import { Toaster } from "@/components/ui/sonner";
 
-const roboto = Roboto({
+const geistSans = Geist({
   subsets: ["latin"],
+  variable: "--font-geist-sans",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Apex Agenda",
-  description: "Simple, clean, organized and to the point todo app",
+  title: {
+    default: "Apex Agenda — a calm, focused task manager",
+    template: "%s · Apex Agenda",
+  },
+  description:
+    "Lists, a smart My Day view, important and planned tasks — everything you need to plan your day, nothing you don't.",
   icons: {
     icon: "/favicon.ico",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfcfd" },
+    { media: "(prefers-color-scheme: dark)", color: "#121318" },
+  ],
 };
 
 export default function RootLayout({
@@ -23,10 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${roboto.className} antialiased min-h-screen`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased min-h-screen`}
+      >
         <Providers>
           {children}
-          <Toaster />
+          <Toaster closeButton position="bottom-right" />
         </Providers>
       </body>
     </html>
