@@ -1,13 +1,13 @@
 import Header from "@/components/header/Header";
+import SiteFooter from "@/components/landing/SiteFooter";
 import React, { ReactNode } from "react";
 
 const layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="min-h-screen">
-      <header className="fixed top-0 z-50 w-full ">
-        <Header />
-      </header>
-      {children}
+    <div className="flex min-h-screen flex-col">
+      <Header variant="marketing" />
+      <main className="flex-1">{children}</main>
+      <SiteFooter />
     </div>
   );
 };

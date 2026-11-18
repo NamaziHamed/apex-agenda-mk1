@@ -1,62 +1,57 @@
-import { AlarmClock,  Notebook, Star } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { FolderPlus, ListPlus, Star } from "lucide-react";
+import SectionHeading from "./SectionHeading";
+
+const steps = [
+  {
+    title: "Make a list",
+    desc: "Create a list for work, personal goals, or anything in between — and pick an icon for it.",
+    icon: FolderPlus,
+  },
+  {
+    title: "Add tasks in seconds",
+    desc: "Type a title and hit Enter. Add details, a due date or move it to another list whenever you like.",
+    icon: ListPlus,
+  },
+  {
+    title: "Focus on today",
+    desc: "Star the important ones and open My Day. Check things off and watch the list get shorter.",
+    icon: Star,
+  },
+];
 
 export default function HowItWorks() {
-  const steps = [
-    {
-      id: 1,
-      title: "Organize Your Agenda",
-      desc: "With a single tap, create a new list for work, personal goals, or anything in between.",
-      icon: Notebook,
-      iconColor: "text-red-400",
-    },
-    {
-      id: 2,
-      title: "Prioritize with a Star",
-      desc: "Easily flag important tasks so you can focus on what truly matters.",
-      icon: Star,
-      iconColor: "text-green-500",
-    },
-    {
-      id: 3,
-      title: "Stay on Track",
-      desc: "Add a new task in seconds. Type down a title for your task and hit enter.",
-      icon: AlarmClock,
-      iconColor: "text-violet-500",
-    },
-  ];
-
   return (
-    <section className="bg-muted py-16">
-      <h3 className="text-blue-500 text-center text-xl md:text-2xl lg:text-4xl font-bold mb-10">
-        How it Works
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
-        {steps.map((step) => (
-          <Card
-            key={step.title}
-            className="group relative cursor-pointer overflow-hidden
-            transform transition-all duration-500 hover:scale-105
-            hover:shadow-2xl"
-          >
-            <CardHeader className="text-center space-y-4">
-              <step.icon
-                className={`mx-auto h-12 w-12 ${step.iconColor}
-                  transition-transform duration-300 group-hover:-translate-y-1`}
-              />
-              <CardTitle className="text-xl font-bold">{step.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <CardDescription>{step.desc}</CardDescription>
-            </CardContent>
-          </Card>
-        ))}
+    <section
+      id="how-it-works"
+      className="scroll-mt-20 border-y bg-muted/40 py-20 sm:py-28"
+    >
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <SectionHeading
+          eyebrow="How it works"
+          title="From blank page to done in three steps"
+        />
+
+        <ol className="mt-14 grid gap-6 md:grid-cols-3">
+          {steps.map((step, index) => (
+            <li
+              key={step.title}
+              className="relative rounded-2xl border bg-card p-6 shadow-xs sm:p-8"
+            >
+              <div className="flex items-center justify-between">
+                <span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary">
+                  <step.icon className="size-5" />
+                </span>
+                <span className="font-mono text-sm text-muted-foreground">
+                  0{index + 1}
+                </span>
+              </div>
+              <h3 className="mt-5 font-semibold">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {step.desc}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
