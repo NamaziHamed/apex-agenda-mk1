@@ -13,6 +13,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 import { signInWithCredentials } from "@/utils/authActions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -45,17 +46,18 @@ const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <form className="space-y-7" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Email: </FormLabel>
+            <FormItem>
+              <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input
                   type="email"
-                  placeholder="example@example.com"
+                  placeholder="you@example.com"
+                  autoComplete="email"
                   {...field}
                 />
               </FormControl>
@@ -67,10 +69,15 @@ const LoginForm = () => {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel>Password: </FormLabel>
+            <FormItem>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="******" {...field} />
+                <Input
+                  type="password"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -80,9 +87,15 @@ const LoginForm = () => {
         <Button
           disabled={form.formState.isSubmitting}
           type="submit"
-          className="w-full mb-4 cursor-pointer"
+          className="mt-2 h-10 w-full"
         >
-          Login
+          {form.formState.isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" /> Signing in…
+            </>
+          ) : (
+            "Sign in"
+          )}
         </Button>
       </form>
     </Form>

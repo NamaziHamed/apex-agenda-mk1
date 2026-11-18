@@ -17,9 +17,9 @@ export function GoogleButtonContent() {
         <>
           <Image
             src={"/google.svg"}
-            width={20}
-            height={20}
-            alt="Google G icon"
+            width={18}
+            height={18}
+            alt=""
           />
           <span>Continue with Google</span>
         </>

@@ -1,6 +1,4 @@
 import React, { ReactNode } from "react";
-import { Separator } from "@/components/ui/separator";
-import { ArrowBigRight } from "lucide-react";
 import Link from "next/link";
 import GoogleBtn from "@/components/forms/GoogleBtn";
 
@@ -18,43 +16,33 @@ const FormWrapper = ({
   description,
 }: wrapperProps) => {
   return (
-    <div
-      className="sm:max-w-md w-full bg-card p-8 rounded-xl shadow-sm
-     shadow-blue-500"
-    >
-      <h2 className="text-center mb-2 text-2xl md:text-3xl lg:text-4xl font-semibold">
-        {title}
-      </h2>
-      <p className="text-center mb-4 text-muted-foreground">{description}</p>
-      <GoogleBtn />
-
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <Separator />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-card px-2 text-muted-foreground">
-            Or continue with email
-          </span>
-        </div>
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 w-full max-w-sm">
+      <div className="mb-8 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{description}</p>
       </div>
-      {children}
-      <Link
-        href={isLogin ? "/register" : "/login"}
-        className="flex gap-2 text-sm text-muted-foreground items-center
-        hover:underline hover:text-primary transition-colors duration-300"
-      >
-        {isLogin ? (
-          <>
-            Don&apos;t have an account? register
-            <ArrowBigRight className="h-4 w-4" />
-          </>
-        ) : (
-          <>
-            Already registered? login <ArrowBigRight className="h-4 w-4" />
-          </>
-        )}
-      </Link>
+
+      <div className="rounded-2xl border bg-card p-6 shadow-sm sm:p-8">
+        <GoogleBtn />
+
+        <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
+          or continue with email
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        {children}
+      </div>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        {isLogin ? "New to Apex Agenda?" : "Already have an account?"}{" "}
+        <Link
+          href={isLogin ? "/register" : "/login"}
+          className="font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
+        >
+          {isLogin ? "Create an account" : "Sign in"}
+        </Link>
+      </p>
     </div>
   );
 };
