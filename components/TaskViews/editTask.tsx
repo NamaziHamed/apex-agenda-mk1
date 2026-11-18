@@ -86,8 +86,6 @@ useEffect(() => {
       categoryId: taskConetent.categoryId || null,
     };
 
-    console.log("Values being sent to form.reset():", formValues);
-
     form.reset(formValues);
     
     setDueDate(!!taskConetent.dueDate);
@@ -135,13 +133,15 @@ useEffect(() => {
     );
   };
 
+  const isBusy = (EditStatus || deleteStatus) === "pending";
+
   return (
     <Sheet open={isSheetOpen} onOpenChange={handleOpenChange}>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit task</SheetTitle>
+      <SheetContent className="w-full gap-0 sm:max-w-md">
+        <SheetHeader className="border-b px-6 py-5">
+          <SheetTitle className="text-base">Task details</SheetTitle>
           <SheetDescription>
-            Make changes to this task and its attributes.
+            Edit the title, notes, schedule and list for this task.
           </SheetDescription>
         </SheetHeader>
 
@@ -149,16 +149,16 @@ useEffect(() => {
           <form
             id="task-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 p-4 relative w-full min-h-0"
+            className="min-h-0 w-full flex-1 space-y-6 overflow-y-auto px-6 py-6"
           >
             <FormField
               control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title:</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g finish q3 report" {...field} />
+                    <Input placeholder="e.g. Finish Q3 report" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -170,10 +170,11 @@ useEffect(() => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description:</FormLabel>
+                  <FormLabel>Notes</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="e.g finalize charts"
+                      placeholder="Add details, links or a checklist…"
+                      className="min-h-24 resize-y"
                       value={field.value || ""}
                       onChange={field.onChange}
                     />
@@ -183,147 +184,157 @@ useEffect(() => {
               )}
             />
 
-            <div className="flex-1">
-              <div className="grid grid-cols-1 gap-5">
-                {/* Toggle add to today */}
-                <DetailsBtn
-                  onClick={() => {
-                    if (isToday) {
-                      form.setValue("isToday", false);
-                      form.setValue("setTodayDate", null);
-                    } else {
-                      form.setValue("isToday", true);
-                      form.setValue("setTodayDate", dt.toUTC().toISO());
-                    }
-                  }}
-                >
-                  <Sun />
-                  {isToday ? "Remove from today list" : "Add to today list"}
-                  {isOverdue && <Badge variant={"destructive"}>Overdue</Badge>}
-                </DetailsBtn>
-
-                {/* Toggle Completed */}
-                <DetailsBtn
-                  onClick={() => {
-                    form.setValue("completed", !isCompleted);
-                    form.setValue("completedAt", dt.toUTC().toISO());
-                  }}
-                >
-                  {isCompleted ? (
-                    <>
-                      <CheckCircle2 /> Completed
-                    </>
-                  ) : (
-                    <>
-                      <Circle /> Incompleted
-                    </>
-                  )}
-                </DetailsBtn>
-
-                {/* Toggle Important */}
-                <DetailsBtn
-                  onClick={() => {
-                    form.setValue("isImportant", !isImportant);
-                  }}
-                >
-                  {!isImportant ? (
-                    <>
-                      <Star /> Set as important
-                    </>
-                  ) : (
-                    <>
-                      <Star className="text-red-400" fill={"#F87171"} /> Remove
-                      importance
-                    </>
-                  )}
-                </DetailsBtn>
-
-                {/* Setting Due date */}
-                {isDueDate || dueDate ? (
-                  <FormField
-                    control={form.control}
-                    name="dueDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="mb-">Set Due Date: </FormLabel>
-                        <FormControl>
-                          <DateTimePicker
-                            onChange={field.onChange}
-                            value={isDueDate || ""}
-                            onCancel={() => setDueDate(false)}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ) : (
-                  <DetailsBtn onClick={() => setDueDate(true)}>
-                    <CalendarX2 />
-                    Set Due Date
-                  </DetailsBtn>
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Status</p>
+              {/* Toggle add to today */}
+              <DetailsBtn
+                active={!!isToday}
+                onClick={() => {
+                  if (isToday) {
+                    form.setValue("isToday", false);
+                    form.setValue("setTodayDate", null);
+                  } else {
+                    form.setValue("isToday", true);
+                    form.setValue("setTodayDate", dt.toUTC().toISO());
+                  }
+                }}
+              >
+                <Sun className={isToday ? "text-primary" : ""} />
+                {isToday ? "In My Day" : "Add to My Day"}
+                {isOverdue && (
+                  <Badge variant={"destructive"} className="ml-auto">
+                    Overdue
+                  </Badge>
                 )}
+              </DetailsBtn>
 
-                <FormField
-                  control={form.control}
-                  name="categoryId"
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Change Category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories
-                          ?.filter(
-                            (category) =>
-                              category.id !== taskConetent?.categoryId
-                          )
-                          .map((category) => (
-                            <SelectItem key={category.id} value={category.id}>
-                              {category.title}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-              </div>
+              {/* Toggle Completed */}
+              <DetailsBtn
+                active={!!isCompleted}
+                onClick={() => {
+                  form.setValue("completed", !isCompleted);
+                  form.setValue("completedAt", dt.toUTC().toISO());
+                }}
+              >
+                {isCompleted ? (
+                  <>
+                    <CheckCircle2 className="text-success" /> Completed
+                  </>
+                ) : (
+                  <>
+                    <Circle /> Mark as completed
+                  </>
+                )}
+              </DetailsBtn>
+
+              {/* Toggle Important */}
+              <DetailsBtn
+                active={!!isImportant}
+                onClick={() => {
+                  form.setValue("isImportant", !isImportant);
+                }}
+              >
+                {!isImportant ? (
+                  <>
+                    <Star /> Mark as important
+                  </>
+                ) : (
+                  <>
+                    <Star className="fill-important text-important" />{" "}
+                    Important
+                  </>
+                )}
+              </DetailsBtn>
             </div>
+
+            {/* Setting Due date */}
+            {isDueDate || dueDate ? (
+              <FormField
+                control={form.control}
+                name="dueDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Due date</FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        onChange={field.onChange}
+                        value={isDueDate || ""}
+                        onCancel={() => setDueDate(false)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Due date</p>
+                <DetailsBtn onClick={() => setDueDate(true)}>
+                  <CalendarX2 />
+                  Add a due date
+                </DetailsBtn>
+              </div>
+            )}
+
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Move to list</FormLabel>
+                  <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose a list" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories
+                        ?.filter(
+                          (category) => category.id !== taskConetent?.categoryId
+                        )
+                        .map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.title}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
           </form>
         </Form>
-        <SheetFooter className="space-y-5">
+
+        <SheetFooter className="mt-0 flex-row items-center gap-2 border-t px-6 py-4">
           <Button
-            type="submit"
-            className="w-full "
-            form="task-form"
-            disabled={(EditStatus || deleteStatus) === "pending"}
-          >
-            {EditStatus === "pending" ? (
-              <>
-                <Loader2 className="animate-spin" /> Updating...
-              </>
-            ) : (
-              "Save"
-            )}
-          </Button>
-          <Button
-            className="flex gap-3"
-            variant={"destructive"}
+            type="button"
+            variant="ghost"
+            className="mr-auto text-destructive hover:bg-destructive/10 hover:text-destructive"
             onClick={handleDeleteTask}
-            disabled={(EditStatus || deleteStatus) === "pending"}
+            disabled={isBusy}
           >
             {deleteStatus !== "pending" ? (
               <Trash2 />
             ) : (
               <Loader2 className="animate-spin" />
             )}
-            {deleteStatus !== "pending" ? (
-              <span>Delete</span>
+            {deleteStatus !== "pending" ? "Delete" : "Deleting…"}
+          </Button>
+          <SheetClose asChild>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </SheetClose>
+          <Button type="submit" form="task-form" disabled={isBusy}>
+            {EditStatus === "pending" ? (
+              <>
+                <Loader2 className="animate-spin" /> Saving…
+              </>
             ) : (
-              <span>Removing...</span>
+              "Save"
             )}
           </Button>
-          <SheetClose>Cancel</SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>

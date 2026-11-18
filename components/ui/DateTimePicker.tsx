@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDownIcon } from "lucide-react";
+import { CalendarIcon, ChevronDownIcon, XIcon } from "lucide-react";
 import { DateTime } from "luxon";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -47,17 +47,20 @@ export function DateTimePicker({
   }, [date, time, onChange]);
 
   return (
-    <div className="flex gap-4">
-      <div className="flex flex-col gap-3">
+    <div className="flex items-center gap-2">
+      <div className="flex-1">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
               variant="outline"
               id="date-picker"
-              className="w-32 justify-between font-normal"
+              className="w-full justify-between font-normal"
             >
-              {date ? date.toLocaleDateString() : "Select date"}
-              <ChevronDownIcon />
+              <span className="flex items-center gap-2">
+                <CalendarIcon className="text-muted-foreground" />
+                {date ? date.toLocaleDateString() : "Select date"}
+              </span>
+              <ChevronDownIcon className="text-muted-foreground" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -73,27 +76,30 @@ export function DateTimePicker({
           </PopoverContent>
         </Popover>
       </div>
-      <div className="flex flex-col gap-3">
+      <div>
         <Input
           type="time"
+          aria-label="Time"
           id="time-picker"
           step="60"
           value={time || undefined}
           onChange={(e) => setTime(e.target.value)}
-          className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          className="w-28 bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
         />
       </div>
       <div>
         <Button
           type="button"
           variant={"ghost"}
-          className="text-xs"
+          size="icon"
+          aria-label="Remove due date"
+          title="Remove due date"
           onClick={() => {
             onChange(null);
             onCancel();
           }}
         >
-          Cancel
+          <XIcon />
         </Button>
       </div>
     </div>

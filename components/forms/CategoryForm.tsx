@@ -24,6 +24,7 @@ import {
   Handshake,
   HeartPlus,
   Lightbulb,
+  Loader2,
   Mail,
   MonitorPlay,
   NotepadText,
@@ -61,7 +62,6 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (editMode) {
-      console.log(icon);
       form.reset({ title: selectedCategory, icon: icon });
     }
   }, [selectedCategory, selectedCategoryId, icon, editMode, form]);
@@ -111,15 +111,20 @@ const CategoryForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-5">
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>List name:</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input type="text" placeholder="Holliday" {...field} />
+                <Input
+                  type="text"
+                  placeholder="e.g. Holiday, Groceries, Side project"
+                  autoComplete="off"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -131,48 +136,51 @@ const CategoryForm = ({
           name="icon"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>icon:</FormLabel>
-              <FormControl>
-                <FormItem>
-                  <FormControl>
-                    <RadioGroup
-                      className="grid grid-cols-5 w-full"
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      {iconMap.map((icon) => (
-                        <FormItem key={icon.value} className="flex gap-2">
-                          <FormControl>
-                            <RadioGroupItem value={icon.value} />
-                          </FormControl>
-                          <FormLabel>{icon.key}</FormLabel>
-                        </FormItem>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
-                </FormItem>
-              </FormControl>
+              <p className="text-sm font-medium">Icon</p>
+              <RadioGroup
+                aria-label="List icon"
+                className="grid grid-cols-5 gap-2"
+                onValueChange={field.onChange}
+                value={field.value}
+              >
+                {iconMap.map((icon) => {
+                  const id = `list-icon-${icon.value}`;
+                  return (
+                    <div key={icon.value} className="relative">
+                      <RadioGroupItem
+                        value={icon.value}
+                        id={id}
+                        aria-label={icon.value}
+                        className="peer sr-only"
+                      />
+                      <label
+                        htmlFor={id}
+                        title={icon.value}
+                        className="flex aspect-square cursor-pointer items-center justify-center rounded-lg border bg-background text-muted-foreground transition-colors hover:bg-accent hover:text-foreground peer-focus-visible:ring-[3px] peer-focus-visible:ring-ring/50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/10 peer-data-[state=checked]:text-primary [&_svg]:size-5"
+                      >
+                        {icon.key}
+                      </label>
+                    </div>
+                  );
+                })}
+              </RadioGroup>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button
-          type="submit"
-          disabled={createPending || updatePending}
-          className="w-full"
-        >
-          {editMode ? "Save" : "Add"}
-        </Button>
+        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+          <Button onClick={onClose} type="button" variant={"outline"}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={createPending || updatePending}>
+            {(createPending || updatePending) && (
+              <Loader2 className="animate-spin" />
+            )}
+            {editMode ? "Save changes" : "Create list"}
+          </Button>
+        </div>
       </form>
-      <Button
-        onClick={onClose}
-        type="reset"
-        className="w-full mt-2"
-        variant={"secondary"}
-      >
-        Cancel
-      </Button>
     </Form>
   );
 };

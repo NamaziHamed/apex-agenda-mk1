@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
-import { EllipsisVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { EllipsisIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "./button";
 import { useUiStore } from "@/store/uiStore";
 import {
@@ -38,48 +38,52 @@ const CategoryEllipsisbtn = () => {
 
   const handleCategoryRemove = () => {
     deleteCategory({ categoryId });
-    setSelectedCategory("Today")
-    setSelectedCategoryId("Today")
+    setSelectedCategory("Today");
+    setSelectedCategoryId("Today");
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"ghost"} className="h-full">
-          <EllipsisVerticalIcon
-            className="hover:text-blue-400
-          duration-300 transition-colors"
-          />
+        <Button
+          variant={"ghost"}
+          size="icon"
+          className="size-8 text-muted-foreground hover:text-foreground"
+          aria-label="List options"
+        >
+          <EllipsisIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onClick={handleEditModeInit}>
-          <PencilIcon className="group-hover:text-blue-400 duration-300 transition-colors" />
-          <span className="group-hover:text-blue-400 duration-300 transition-colors">
-            Edit
-          </span>
+          <PencilIcon />
+          Edit list
         </DropdownMenuItem>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-              <Trash2Icon className="group-hover:text-blue-400 duration-300 transition-colors" />{" "}
-              <span className="group-hover:text-blue-400 duration-300 transition-colors">
-                Remove
-              </span>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Trash2Icon />
+              Delete list
             </DropdownMenuItem>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogTitle>Delete this list?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete your
-                List and all the tasks within from our servers.
+                This permanently deletes the list and every task in it. This
+                can&apos;t be undone.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={handleCategoryRemove}>
-                Continue
+              <AlertDialogAction
+                onClick={handleCategoryRemove}
+                className="bg-destructive text-white hover:bg-destructive/90"
+              >
+                Delete list
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
