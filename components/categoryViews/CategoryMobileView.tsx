@@ -5,13 +5,13 @@ import {
   SheetContent,
   SheetDescription,
   SheetFooter,
+  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { Separator } from "../ui/separator";
-import AddListDialog from "./AddListDialog";
+import AddListButton from "./AddListButton";
 import { Button } from "../ui/button";
-import { Menu } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 import CategoryViewSect from "./CategoryViewSect";
 import { useUiStore } from "@/store/uiStore";
 
@@ -21,22 +21,27 @@ const CategoryMobileView = () => {
   return (
     <Sheet open={isExpanded} onOpenChange={toggleExpand}>
       <SheetTrigger asChild>
-        <Button className="w-fit" variant={"ghost"}>
-          <Menu />
+        <Button
+          variant="ghost"
+          size="icon"
+          className="-ml-2 size-8"
+          aria-label="Open views and lists"
+        >
+          <PanelLeft />
         </Button>
       </SheetTrigger>
-      <SheetContent className="pt-10 px-5" side="left">
-        <SheetTitle
-          className="font-semibold text-2xl md:text-3xl
-        lg:text-4xl"
-        >
-          Views
-        </SheetTitle>
-        <SheetDescription>Select a view to continue</SheetDescription>
-        <Separator />
-        <CategoryViewSect />
-        <SheetFooter>
-          <AddListDialog />
+      <SheetContent side="left" className="w-72 gap-0 bg-sidebar p-0">
+        <SheetHeader className="border-b px-4 py-4">
+          <SheetTitle>Views</SheetTitle>
+          <SheetDescription className="sr-only">
+            Choose a view or list to show its tasks.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+          <CategoryViewSect />
+        </div>
+        <SheetFooter className="mt-0 border-t p-3">
+          <AddListButton />
         </SheetFooter>
       </SheetContent>
     </Sheet>

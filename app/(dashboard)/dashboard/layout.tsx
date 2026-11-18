@@ -1,9 +1,11 @@
 "use client";
 import AddListDialog from "@/components/categoryViews/AddListDialog";
+import AddListButton from "@/components/categoryViews/AddListButton";
+import CategoryMobileView from "@/components/categoryViews/CategoryMobileView";
+import DashboardSkeleton from "@/components/dashboard/DashboardSkeleton";
 import Header from "@/components/header/Header";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { MenuIcon } from "lucide-react";
 import React, { ReactNode } from "react";
 
 interface layoutProps {
@@ -15,27 +17,40 @@ interface layoutProps {
 const Layout = ({ children, categoryView, taskView }: layoutProps) => {
   const { matches: isMobile, isLoading } = useMediaQuery();
 
-  if (isLoading) return <MenuIcon className="w-3 h-3" />;
+  if (isLoading) return <DashboardSkeleton />;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <div
-        className="flex-1 bg-card grid md:grid-cols-[25%_75%] md:m-10 md:rounded-2xl 
-      text-card-foreground p-4 xl:p-6 relative"
-      >
-        {!isMobile && <div>{categoryView}</div>}
-        <div>{taskView}</div>
-      </div>
-      {children}
-      <footer className="fixed w-full bottom-0 ">
-        <div className="h-24 bg-background/80 flex items-center px-15">
-          <div className="grid md:grid-cols-[25%_75%] w-full gap-2">
-            <AddListDialog isMobile={isMobile} />
-            <AddTaskInput />
+    <div className="flex h-dvh flex-col bg-background">
+      <Header variant="app" leading={isMobile && <CategoryMobileView />} />
+
+      <div className="flex min-h-0 flex-1">
+        {!isMobile && (
+          <aside
+            aria-label="Views and lists"
+            className="flex w-64 shrink-0 flex-col border-r bg-sidebar lg:w-72"
+          >
+            <div className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+              {categoryView}
+            </div>
+            <div className="border-t p-3">
+              <AddListButton />
+            </div>
+          </aside>
+        )}
+
+        <main className="flex min-w-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto">{taskView}</div>
+          <div className="border-t bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="mx-auto w-full max-w-3xl px-4 py-3 sm:px-8">
+              <AddTaskInput />
+            </div>
           </div>
-        </div>
-      </footer>
+        </main>
+      </div>
+
+      {/* Single dialog instance for both "new list" and "edit list" */}
+      <AddListDialog />
+      {children}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store/uiStore";
 import { LucideIcon, icons } from "lucide-react";
 import { Categories } from "@/types/categoryTypes";
@@ -46,21 +45,46 @@ const CategoryItem = ({ item }: { item: Categories }) => {
     setCategory(item.title);
     setCategoryId(item.id);
     setSelectedIcon(item.icon || "");
-   if(isMobile) closeDialog();
+    if (isMobile) closeDialog();
   };
 
+  const isActive = selectedCategory === item.title;
+  const count = item._count.tasks;
+
   return (
-    <Button
-      className="flex justify-between w-full"
-      variant={selectedCategory === item.title ? "default" : "outline"}
-      onClick={() => handleCategorySelection()}
-    >
-      <div className="flex items-center gap-2 flex-1 overflow-hidden">
-        <ViewIcon className="h-4 w-4" />
-        <span className="truncate">{item.title}</span>
-      </div>
-      <Badge variant={"default"}>{item._count.tasks}</Badge>
-    </Button>
+    <li>
+      <button
+        type="button"
+        onClick={() => handleCategorySelection()}
+        aria-current={isActive ? "page" : undefined}
+        className={cn(
+          "group flex h-8 w-full items-center gap-2.5 rounded-md px-2.5 text-sm transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-sidebar-ring/50",
+          isActive
+            ? "bg-sidebar-accent font-medium text-sidebar-accent-foreground"
+            : "text-sidebar-foreground hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+        )}
+      >
+        <ViewIcon
+          className={cn(
+            "size-4 shrink-0 transition-colors",
+            isActive
+              ? "text-primary"
+              : "text-muted-foreground group-hover:text-foreground"
+          )}
+        />
+        <span className="flex-1 truncate text-left">{item.title}</span>
+        {count > 0 && (
+          <span
+            className={cn(
+              "text-xs tabular-nums",
+              isActive ? "text-sidebar-accent-foreground/80" : "text-muted-foreground"
+            )}
+          >
+            {count}
+          </span>
+        )}
+      </button>
+    </li>
   );
 };
 

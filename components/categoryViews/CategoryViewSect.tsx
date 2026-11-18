@@ -1,15 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import CategoryItem from "./CategoryItem";
-import { Separator } from "../ui/separator";
+import { Skeleton } from "../ui/skeleton";
+import { useUserDataStatus } from "@/hooks/useUserDataStatus";
 import { useTaskDataStore } from "@/store/taskDataStore";
 import { Categories } from "@/types/categoryTypes";
 
 const CategoryViewSect = () => {
   const categories = useTaskDataStore((state) => state.categories);
   const counts = useTaskDataStore((state) => state.counts);
+  const { isLoading } = useUserDataStatus();
 
-  const [views, setViews] = useState<Categories[]>([]); 
+  const [views, setViews] = useState<Categories[]>([]);
 
   useEffect(() => {
     setViews([
@@ -57,17 +59,36 @@ const CategoryViewSect = () => {
   }, [counts]);
 
   return (
-    <ul className="space-y-1">
-      {views.map((view) => (
-        <CategoryItem item={view} key={view.id} />
-      ))}
-      <div className="relative w-full h-4 p-2">
-        <Separator />
+    <nav aria-label="Views and lists" className="space-y-6">
+      <ul className="space-y-0.5">
+        {views.map((view) => (
+          <CategoryItem item={view} key={view.id} />
+        ))}
+      </ul>
+
+      <div>
+        <h2 className="mb-1 px-2.5 text-xs font-medium text-muted-foreground">
+          Lists
+        </h2>
+        {isLoading ? (
+          <div className="space-y-1.5 px-1" aria-hidden>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-7 w-full" />
+            ))}
+          </div>
+        ) : categories && categories.length > 0 ? (
+          <ul className="space-y-0.5">
+            {categories.map((category) => (
+              <CategoryItem item={category} key={category.id} />
+            ))}
+          </ul>
+        ) : (
+          <p className="px-2.5 py-1.5 text-xs text-muted-foreground">
+            No lists yet. Create one to group related tasks.
+          </p>
+        )}
       </div>
-      {categories?.map((category) => (
-        <CategoryItem item={category} key={category.id} />
-      ))}
-    </ul>
+    </nav>
   );
 };
 
