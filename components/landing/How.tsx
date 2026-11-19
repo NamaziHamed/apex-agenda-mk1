@@ -1,11 +1,11 @@
-import { AlarmClock,  Notebook, Star } from "lucide-react";
+import { AlarmClock, Notebook, Star } from "lucide-react";
 import {
   Card,
-  CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "../ui/card";
+import { Badge } from "../ui/badge";
 
 export default function HowItWorks() {
   const steps = [
@@ -14,47 +14,40 @@ export default function HowItWorks() {
       title: "Organize Your Agenda",
       desc: "With a single tap, create a new list for work, personal goals, or anything in between.",
       icon: Notebook,
-      iconColor: "text-red-400",
     },
     {
       id: 2,
       title: "Prioritize with a Star",
       desc: "Easily flag important tasks so you can focus on what truly matters.",
       icon: Star,
-      iconColor: "text-green-500",
     },
     {
       id: 3,
       title: "Stay on Track",
       desc: "Add a new task in seconds. Type down a title for your task and hit enter.",
       icon: AlarmClock,
-      iconColor: "text-violet-500",
     },
   ];
 
   return (
-    <section className="bg-muted py-16">
-      <h3 className="text-blue-500 text-center text-xl md:text-2xl lg:text-4xl font-bold mb-10">
-        How it Works
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+    <section className="px-4">
+      <div className="mb-10 text-center">
+        <h2 className="text-2xl font-bold lg:text-4xl">How it Works</h2>
+        <p className="mt-2 text-muted-foreground">
+          Three steps to a clearer day.
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {steps.map((step) => (
-          <Card
-            key={step.title}
-            className="group relative cursor-pointer overflow-hidden
-            transform transition-all duration-500 hover:scale-105
-            hover:shadow-2xl"
-          >
-            <CardHeader className="text-center space-y-4">
-              <step.icon
-                className={`mx-auto h-12 w-12 ${step.iconColor}
-                  transition-transform duration-300 group-hover:-translate-y-1`}
-              />
-              <CardTitle className="text-xl font-bold">{step.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
+          <Card key={step.id} className="bg-muted/50">
+            <CardHeader className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Badge>Step {step.id}</Badge>
+                <step.icon className="h-5 w-5 text-muted-foreground" />
+              </div>
+              <CardTitle className="text-lg">{step.title}</CardTitle>
               <CardDescription>{step.desc}</CardDescription>
-            </CardContent>
+            </CardHeader>
           </Card>
         ))}
       </div>

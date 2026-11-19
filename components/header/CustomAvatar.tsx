@@ -38,8 +38,6 @@ const CustomAvatar = () => {
       </Button>
     );
 
-  console.log("Debug", session?.user.image);
-
   if (status === "loading") return <Loader2 className="animate-spin" />;
 
   return (

@@ -1,44 +1,45 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 
 export default function Hero() {
   return (
-    <main className="relative w-full h-[450px] lg:h-[550px] text-primary-foreground">
-      <div className="relative flex items-center justify-center h-full w-full">
-        <div className="absolute inset-0 z-0 bg-[url('/banner.png')] bg-cover bg-center bg-no-repeat"></div>
-        <div className="absolute inset-0 z-10 bg-black/70"></div>
-        <div className="relative z-20 flex max-w-2xl flex-col items-center gap-4 px-4 text-center">
-          <h1
-            className="w-fit bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text 
-            text-4xl font-bold italic text-transparent lg:text-6xl"
-          >
-            Apex Agenda
-          </h1>
+    <section className="max-w-7xl m-auto grid items-center gap-10 px-4 py-16 lg:grid-cols-2 lg:py-24">
+      <div className="flex flex-col items-center gap-6 text-center lg:items-start lg:text-left">
+        <Badge variant="secondary">Simple. Clean. To the point.</Badge>
 
-          <p className="text-lg text-shadow-sm text-shadow-blue-500 lg:text-xl">
-            Stop managing your time. Start{" "}
-            <span className="font-bold italic">mastering</span> it. Our sleek,
-            modern design and powerful features help you prioritize what truly
-            matters.
-          </p>
+        <h1 className="text-4xl font-bold tracking-tight lg:text-6xl">
+          Stop managing your time. Start{" "}
+          <span className="bg-gradient-to-r from-blue-500 to-violet-500 bg-clip-text text-transparent">
+            mastering
+          </span>{" "}
+          it.
+        </h1>
 
-          <div className="mt-4 flex items-center gap-4">
-            <Button
-              asChild
-              className="transform transition-all duration-300 hover:-translate-y-[2px] hover:shadow-lg"
-            >
-              <Link href={"/register"}>Get started</Link>
-            </Button>
-            <Button
-              asChild
-              variant={"outline"}
-              className="transform transition-all duration-300 hover:-translate-y-[2px] hover:shadow-lg"
-            >
-              <Link href={"#demo"}>See Demo!</Link>
-            </Button>
-          </div>
+        <p className="max-w-xl text-lg text-muted-foreground">
+          Apex Agenda helps you organize your lists, flag what matters and get
+          things done, without the clutter.
+        </p>
+
+        <div className="flex items-center gap-4">
+          <Button asChild size="lg">
+            <Link href={"/register"}>Get started</Link>
+          </Button>
+          <Button asChild size="lg" variant={"outline"}>
+            <Link href={"#preview"}>See it in action</Link>
+          </Button>
         </div>
       </div>
-    </main>
+
+      <Image
+        src="/banner.png"
+        alt="Apex Agenda illustration"
+        width={1536}
+        height={1024}
+        priority
+        className="w-full rounded-2xl border shadow-lg"
+      />
+    </section>
   );
 }
