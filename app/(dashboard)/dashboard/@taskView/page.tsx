@@ -84,11 +84,11 @@ const TaskView = () => {
     iconMap.DefaultIcon;
 
   const showCompleted =
-    selectedCategory !== "Completed" && filteredTasks.completed.length > 0;
+    selectedCategoryId !== "Completed" && filteredTasks.completed.length > 0;
 
   useEffect(() => {
     if (tasks) {
-      switch (selectedCategory) {
+      switch (selectedCategoryId) {
         case "Today":
           return setFilteredTasks(tasks.today);
         case "Important":
@@ -110,14 +110,17 @@ const TaskView = () => {
           });
       }
     }
-  }, [tasks, selectedCategory, selectedCategoryId]);
+  }, [tasks, selectedCategoryId]);
 
-  const empty = emptyStates[selectedCategory] ?? emptyStates.__list;
+  const isBuiltInView = selectedCategoryId in emptyStates;
+  const empty = isBuiltInView
+    ? emptyStates[selectedCategoryId]
+    : emptyStates.__list;
   const subtitle =
-    selectedCategory === "Today"
+    selectedCategoryId === "Today"
       ? DateTime.now().toFormat("cccc, LLLL d")
       : `${filteredTasks.active.length} ${
-          selectedCategory === "Completed" ? "completed" : "open"
+          selectedCategoryId === "Completed" ? "completed" : "open"
         } ${filteredTasks.active.length === 1 ? "task" : "tasks"}`;
 
   return (
@@ -139,7 +142,7 @@ const TaskView = () => {
             )}
           </div>
         </div>
-        {selectedCategoryId.length > 10 && <CategoryEllipsisbtn />}
+        {!isBuiltInView && <CategoryEllipsisbtn />}
       </div>
 
       {isLoading ? (

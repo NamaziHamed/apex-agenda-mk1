@@ -17,7 +17,7 @@ const staticIconMap: Record<string, LucideIcon> = {
 
 const CategoryItem = ({ item }: { item: Categories }) => {
   const setCategory = useUiStore((state) => state.setSelectedCategory);
-  const selectedCategory = useUiStore((state) => state.selectedCategory);
+  const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
   const isMobile = useUiStore((state) => state.isMobile);
   const closeDialog = useUiStore((state) => state.toggleDashboardExpanded);
   const setCategoryId = useUiStore((state) => state.setSelectedCategoryId);
@@ -48,7 +48,8 @@ const CategoryItem = ({ item }: { item: Categories }) => {
     if (isMobile) closeDialog();
   };
 
-  const isActive = selectedCategory === item.title;
+  // Compare ids, not titles: a list called "Today" must not light up the Today view too.
+  const isActive = selectedCategoryId === item.id;
   const count = item._count.tasks;
 
   return (

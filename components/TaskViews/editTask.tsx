@@ -120,9 +120,9 @@ useEffect(() => {
   useEffect(() => {
     if (form.getValues("setTodayDate")) {
       const date = DateTime.fromISO(form.getValues("setTodayDate") || "");
-      setOverdue(!date.hasSame(dt, "day"));
+      setOverdue(!date.hasSame(DateTime.now(), "day"));
     } else setOverdue(false);
-  }, [taskConetent, isToday, form, dt]);
+  }, [taskConetent, isToday, form]);
 
   const handleDeleteTask = () => {
     deleteTask(
@@ -213,7 +213,10 @@ useEffect(() => {
                 active={!!isCompleted}
                 onClick={() => {
                   form.setValue("completed", !isCompleted);
-                  form.setValue("completedAt", dt.toUTC().toISO());
+                  form.setValue(
+                    "completedAt",
+                    isCompleted ? null : dt.toUTC().toISO()
+                  );
                 }}
               >
                 {isCompleted ? (
@@ -282,22 +285,28 @@ useEffect(() => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Move to list</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value ?? ""}
+                    disabled={!categories?.length}
+                  >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Choose a list" />
+                        <SelectValue
+                          placeholder={
+                            categories?.length
+                              ? "Choose a list"
+                              : "Create a list first"
+                          }
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {categories
-                        ?.filter(
-                          (category) => category.id !== taskConetent?.categoryId
-                        )
-                        .map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.title}
-                          </SelectItem>
-                        ))}
+                      {categories?.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </FormItem>

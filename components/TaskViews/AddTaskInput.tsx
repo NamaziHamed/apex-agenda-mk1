@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { Input } from "../ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,20 +9,15 @@ import { useCreateTask } from "@/hooks/useTasks";
 import { useUiStore } from "@/store/uiStore";
 import { Loader2, Plus } from "lucide-react";
 
+/** Views that are computed from other tasks, so new tasks can't be added there. */
+export const READ_ONLY_VIEWS = ["Planned", "Completed"];
+
 const AddTaskInput = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const id = useUiStore((state) => state.selectedCategoryId);
   const selectedCategory = useUiStore((state) => state.selectedCategory);
-  const { mutate: createCategory, isPending } = useCreateTask();
-  const [isDiabled, setDisable] = useState(false);
-
-  useEffect(() => {
-    if (selectedCategory === "Planned" || selectedCategory === "Completed") {
-      setDisable(true);
-    } else {
-      setDisable(false);
-    }
-  }, [selectedCategory]);
+  const isMobile = useUiStore((state) => state.isMobile);
+  const { mutate: createTask, isPending } = useCreateTask();
 
   const form = useForm({
     resolver: zodResolver(taskPayloadSchema),
@@ -31,21 +26,21 @@ const AddTaskInput = () => {
     },
   });
 
-  const focusGainer = () => {
-    setTimeout(() => {
-      requestAnimationFrame(() => {
-        inputRef.current?.focus();
-      });
-    }, 500);
-  };
-
+  // On desktop, be ready to type after switching lists. On mobile, don't
+  // focus automatically: it pops the keyboard over the list you just opened.
   useEffect(() => {
-    focusGainer();
-  }, [selectedCategory, isDiabled]);
+    form.reset();
+    if (isMobile) return;
+    const frame = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(frame);
+  }, [id, isMobile, form]);
 
   const handleSubmit = (data: TaskPayload) => {
-    createCategory(
-      { title: data.title, selectedCategory, categoryId: id },
+    const title = data.title.trim();
+    if (!title) return;
+    createTask(
+      // Built-in views use their name as id, so the id tells us which view we're in.
+      { title, selectedCategory: id, categoryId: id },
       {
         onSuccess: () => {
           form.reset();
@@ -54,10 +49,6 @@ const AddTaskInput = () => {
       }
     );
   };
-
-  const placeholder = isDiabled
-    ? `Switch to Today or a list to add tasks`
-    : `Add a task to ${selectedCategory}`;
 
   return (
     <Form {...form}>
@@ -76,12 +67,14 @@ const AddTaskInput = () => {
                 <FormControl>
                   <Input
                     type="text"
-                    placeholder={placeholder}
+                    placeholder={`Add a task to ${selectedCategory}`}
                     aria-label="Add a task"
                     autoComplete="off"
+                    enterKeyHint="done"
                     className="h-11 rounded-lg bg-card pl-9 pr-16 shadow-sm"
                     {...field}
-                    disabled={isPending || isDiabled}
+                    // Stay editable while saving so focus isn't lost between quick adds.
+                    readOnly={isPending}
                     ref={(el) => {
                       field.ref(el);
                       inputRef.current = el;

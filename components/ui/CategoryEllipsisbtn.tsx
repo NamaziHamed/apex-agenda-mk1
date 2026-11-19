@@ -29,6 +29,9 @@ const CategoryEllipsisbtn = () => {
     (state) => state.setSelectedCategoryId
   );
   const setSelectedCategory = useUiStore((state) => state.setSelectedCategory);
+  const setSelectedCategoryIcon = useUiStore(
+    (state) => state.setSelectedCategoryIcon
+  );
   const { mutate: deleteCategory } = useDeleteCategory();
 
   const handleEditModeInit = () => {
@@ -40,6 +43,7 @@ const CategoryEllipsisbtn = () => {
     deleteCategory({ categoryId });
     setSelectedCategory("Today");
     setSelectedCategoryId("Today");
+    setSelectedCategoryIcon("Sun");
   };
 
   return (
