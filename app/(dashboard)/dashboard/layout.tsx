@@ -1,9 +1,10 @@
 "use client";
+import AddListButton from "@/components/categoryViews/AddListButton";
 import AddListDialog from "@/components/categoryViews/AddListDialog";
 import Header from "@/components/header/Header";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { MenuIcon } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { ReactNode } from "react";
 
 interface layoutProps {
@@ -15,27 +16,41 @@ interface layoutProps {
 const Layout = ({ children, categoryView, taskView }: layoutProps) => {
   const { matches: isMobile, isLoading } = useMediaQuery();
 
-  if (isLoading) return <MenuIcon className="w-3 h-3" />;
+  if (isLoading)
+    return (
+      <div className="grid h-dvh place-items-center">
+        <Loader2 className="size-6 animate-spin text-blue-500" />
+      </div>
+    );
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex h-dvh flex-col">
       <Header />
-      <div
-        className="flex-1 bg-card grid md:grid-cols-[25%_75%] md:m-10 md:rounded-2xl 
-      text-card-foreground p-4 xl:p-6 relative"
-      >
-        {!isMobile && <div>{categoryView}</div>}
-        <div>{taskView}</div>
-      </div>
-      {children}
-      <footer className="fixed w-full bottom-0 ">
-        <div className="h-24 bg-background/80 flex items-center px-15">
-          <div className="grid md:grid-cols-[25%_75%] w-full gap-2">
-            <AddListDialog isMobile={isMobile} />
+      {/* The card fills the screen; only the lists inside it scroll, so the
+          "Add list" and "Add task" controls stay in reach without a fixed bar. */}
+      <div className="grid min-h-0 flex-1 gap-4 bg-card p-4 text-card-foreground md:m-10 md:grid-cols-[25%_1fr] md:rounded-2xl md:border md:shadow-sm xl:p-6">
+        {!isMobile && (
+          <aside className="flex min-h-0 flex-col">
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+              {categoryView}
+            </div>
+            <div className="mt-3 border-t pt-3">
+              <AddListButton />
+            </div>
+          </aside>
+        )}
+        <section className="flex min-h-0 flex-col overflow-hidden rounded-xl border">
+          <div className="min-h-0 flex-1 overflow-y-auto p-2 md:p-3">
+            {taskView}
+          </div>
+          <div className="border-t bg-background/60 p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:p-3">
             <AddTaskInput />
           </div>
-        </div>
-      </footer>
+        </section>
+      </div>
+      {/* One dialog for both "new list" and "edit list", always mounted. */}
+      <AddListDialog />
+      {children}
     </div>
   );
 };

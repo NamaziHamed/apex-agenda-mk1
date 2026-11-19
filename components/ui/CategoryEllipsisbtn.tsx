@@ -29,6 +29,9 @@ const CategoryEllipsisbtn = () => {
     (state) => state.setSelectedCategoryId
   );
   const setSelectedCategory = useUiStore((state) => state.setSelectedCategory);
+  const setSelectedCategoryIcon = useUiStore(
+    (state) => state.setSelectedCategoryIcon
+  );
   const { mutate: deleteCategory } = useDeleteCategory();
 
   const handleEditModeInit = () => {
@@ -38,14 +41,15 @@ const CategoryEllipsisbtn = () => {
 
   const handleCategoryRemove = () => {
     deleteCategory({ categoryId });
-    setSelectedCategory("Today")
-    setSelectedCategoryId("Today")
+    setSelectedCategory("Today");
+    setSelectedCategoryId("Today");
+    setSelectedCategoryIcon("Sun");
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"ghost"} className="h-full">
+        <Button variant={"ghost"} size="icon" aria-label="List options">
           <EllipsisVerticalIcon
             className="hover:text-blue-400
           duration-300 transition-colors"

@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Separator } from "../ui/separator";
-import AddListDialog from "./AddListDialog";
+import AddListButton from "./AddListButton";
 import { Button } from "../ui/button";
 import { Menu } from "lucide-react";
 import CategoryViewSect from "./CategoryViewSect";
@@ -21,22 +21,19 @@ const CategoryMobileView = () => {
   return (
     <Sheet open={isExpanded} onOpenChange={toggleExpand}>
       <SheetTrigger asChild>
-        <Button className="w-fit" variant={"ghost"}>
+        <Button className="w-fit" variant={"ghost"} size="icon" aria-label="Open views">
           <Menu />
         </Button>
       </SheetTrigger>
-      <SheetContent className="pt-10 px-5" side="left">
-        <SheetTitle
-          className="font-semibold text-2xl md:text-3xl
-        lg:text-4xl"
-        >
-          Views
-        </SheetTitle>
+      <SheetContent className="gap-3 px-5 pt-10" side="left">
+        <SheetTitle className="text-2xl font-semibold">Views</SheetTitle>
         <SheetDescription>Select a view to continue</SheetDescription>
         <Separator />
-        <CategoryViewSect />
-        <SheetFooter>
-          <AddListDialog />
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <CategoryViewSect />
+        </div>
+        <SheetFooter className="border-t px-0">
+          <AddListButton />
         </SheetFooter>
       </SheetContent>
     </Sheet>

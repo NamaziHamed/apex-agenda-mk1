@@ -61,9 +61,9 @@ const CategoryViewSect = () => {
       {views.map((view) => (
         <CategoryItem item={view} key={view.id} />
       ))}
-      <div className="relative w-full h-4 p-2">
+      <li role="separator" className="relative w-full h-4 p-2">
         <Separator />
-      </div>
+      </li>
       {categories?.map((category) => (
         <CategoryItem item={category} key={category.id} />
       ))}

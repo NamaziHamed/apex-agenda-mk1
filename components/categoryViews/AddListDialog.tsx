@@ -6,50 +6,26 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { PlusIcon } from "lucide-react";
 import CategoryForm from "../forms/CategoryForm";
 import { useUiStore } from "@/store/uiStore";
 
-const AddListDialog = ({ isMobile }: { isMobile?: boolean }) => {
+const AddListDialog = () => {
   const isOpen = useUiStore((state) => state.isCategoryDialogOpen);
   const onOpen = useUiStore((state) => state.setCategoryDialogOpen);
   const onClose = useUiStore((state) => state.setCategoryDialogClose);
   const isEditMode = useUiStore((state) => state.isEditMode);
 
-  const handleOpenChange = () => {
-    if (isOpen) {
-      onClose();
-    } else {
-      onOpen();
-    }
-  };
-
   return (
-    <Dialog
-      open={isOpen}
-      onOpenChange={handleOpenChange}
-      aria-hidden={isEditMode ? "Edit list" : "Add new list"}
-    >
-      <DialogTrigger asChild>
-        <Button
-          variant={"ghost"}
-          onClick={onOpen}
-          className={`${isMobile ? "hidden" : "flex items-center"}
-          `}
-        >
-          <PlusIcon />
-          <span>Add list</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={(open) => (open ? onOpen() : onClose())}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {isEditMode ? "Edit" : "Add new"} List or Group
-          </DialogTitle>
-          <DialogDescription></DialogDescription>
+          <DialogTitle>{isEditMode ? "Edit" : "Add new"} List or Group</DialogTitle>
+          <DialogDescription>
+            {isEditMode
+              ? "Rename this list or pick a different icon."
+              : "Group related tasks together and pick an icon for it."}
+          </DialogDescription>
         </DialogHeader>
         <CategoryForm onClose={onClose} editMode={isEditMode} />
       </DialogContent>

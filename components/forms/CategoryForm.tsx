@@ -50,6 +50,10 @@ const CategoryForm = ({
   const selectedCategoryId = useUiStore((state) => state.selectedCategoryId);
   const icon = useUiStore((state) => state.selectedCategoryIcon);
   const removeEditMode = useUiStore((state) => state.removeEditMode);
+  const setSelectedCategory = useUiStore((state) => state.setSelectedCategory);
+  const setSelectedCategoryIcon = useUiStore(
+    (state) => state.setSelectedCategoryIcon
+  );
 
   const form = useForm({
     resolver: zodResolver(categoryFormSchema),
@@ -61,7 +65,6 @@ const CategoryForm = ({
 
   useEffect(() => {
     if (editMode) {
-      console.log(icon);
       form.reset({ title: selectedCategory, icon: icon });
     }
   }, [selectedCategory, selectedCategoryId, icon, editMode, form]);
@@ -77,6 +80,9 @@ const CategoryForm = ({
         removeEditMode();
         onClose();
         if (editMode) {
+          // Keep the page title in sync with the renamed list.
+          setSelectedCategory(payload.title);
+          setSelectedCategoryIcon(payload.icon);
           toast.success("List updated!");
         } else {
           toast.success("New List Created!");
