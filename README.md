@@ -80,6 +80,27 @@ Apex Agenda is a robust, full-stack task management application designed to hand
     npm run dev
     ```
 
+### Push notifications (task reminders)
+
+Reminders and due times are sent as Web Push notifications, so they arrive even when the app is closed.
+
+1.  **Generate keys** and add them to `.env.local` (and to Vercel → Settings → Environment Variables):
+
+    ```bash
+    npx web-push generate-vapid-keys
+    ```
+
+    ```env
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY="..."
+    VAPID_PRIVATE_KEY="..."
+    VAPID_SUBJECT="https://your-app.vercel.app"
+    CRON_SECRET="any long random string"
+    ```
+
+2.  **Schedule the reminder job** in Supabase: open the SQL Editor, paste `supabase/reminders-setup.sql`, replace `<APP_URL>` and `<CRON_SECRET>`, and run it. It adds the new tables/columns and uses `pg_cron` to call `/api/cron/reminders` every minute.
+
+3.  **Turn it on** from the bell icon in the dashboard header. On iPhone, add the app to the Home Screen first (Share → Add to Home Screen); iOS only allows web push for installed apps.
+
 ---
 
 **_Built by Hamed Namazi_**

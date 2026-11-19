@@ -2,6 +2,7 @@
 import AddListButton from "@/components/categoryViews/AddListButton";
 import AddListDialog from "@/components/categoryViews/AddListDialog";
 import Header from "@/components/header/Header";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import AddTaskInput from "@/components/TaskViews/AddTaskInput";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Loader2 } from "lucide-react";
@@ -25,7 +26,7 @@ const Layout = ({ children, categoryView, taskView }: layoutProps) => {
 
   return (
     <div className="flex h-dvh flex-col">
-      <Header />
+      <Header actions={<NotificationBell />} />
       {/* The card fills the screen; only the lists inside it scroll, so the
           "Add list" and "Add task" controls stay in reach without a fixed bar. */}
       <div className="grid min-h-0 flex-1 gap-4 bg-card p-4 text-card-foreground md:m-10 md:grid-cols-[25%_1fr] md:rounded-2xl md:border md:shadow-sm xl:p-6">

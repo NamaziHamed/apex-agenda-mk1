@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers/Providers";
@@ -13,7 +13,18 @@ export const metadata: Metadata = {
   description: "Simple, clean, organized and to the point todo app",
   icons: {
     icon: "/favicon.ico",
+    apple: "/pwa-icon/192",
   },
+  // Lets iPhone users add the app to the home screen, which iOS requires for push.
+  appleWebApp: {
+    capable: true,
+    title: "Apex Agenda",
+    statusBarStyle: "default",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#3b82f6",
 };
 
 export default function RootLayout({

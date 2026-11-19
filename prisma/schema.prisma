@@ -20,6 +20,7 @@ model User {
   sessions      Session[]
   categories    Category[] 
   tasks         Task[]     
+  pushSubscriptions PushSubscription[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,6 +93,9 @@ model Task {
   completed   Boolean   @default(false)
   isImportant Boolean   @default(false)
   isToday     Boolean   @default(false)
+  // When the reminder / due-date push was sent, so each one fires only once.
+  reminderSentAt DateTime?
+  dueNotifiedAt  DateTime?
 
   userId      String
   categoryId  String?
@@ -101,5 +105,23 @@ model Task {
 
   @@unique([userId, title])
   @@index([userId, categoryId])
+  @@index([reminder])
+  @@index([dueDate])
   @@map("tasks")
+}
+
+// One row per browser/device that allowed notifications.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("push_subscriptions")
 }

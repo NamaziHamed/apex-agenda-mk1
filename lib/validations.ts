@@ -94,6 +94,22 @@ export const tasksChema = z.object({
 
 export type tasksChemaProps = z.infer<typeof tasksChema>;
 
+/** Fields a user may change through PATCH /api/tasks/[taskId]. */
+export const taskUpdateSchema = z
+  .object({
+    title: z.string().trim().min(1, "Title cannot be empty."),
+    description: z.string().nullable(),
+    reminder: z.iso.datetime({ offset: true }).nullable(),
+    dueDate: z.iso.datetime({ offset: true }).nullable(),
+    completedAt: z.iso.datetime({ offset: true }).nullable(),
+    setTodayDate: z.iso.datetime({ offset: true }).nullable(),
+    isImportant: z.boolean(),
+    completed: z.boolean(),
+    isToday: z.boolean(),
+    categoryId: z.string().nullable(),
+  })
+  .partial();
+
 export const editTaskSchema = z.object({
   id: z.string(),
   title: z.string().min(1, "Title cannot be empty."),

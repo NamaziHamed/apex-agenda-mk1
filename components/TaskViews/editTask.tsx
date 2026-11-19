@@ -32,6 +32,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea";
 import DetailsBtn from "./DetailsBtn";
 import {
+  BellPlus,
+  BellRing,
   CalendarX2,
   CheckCircle2,
   Circle,
@@ -49,6 +51,7 @@ import { useTaskDataStore } from "@/store/taskDataStore";
 
 const EditTask = () => {
   const [dueDate, setDueDate] = useState(false);
+  const [showReminder, setShowReminder] = useState(false);
   const isSheetOpen = useTaskDetailsStore((state) => state.isSheetOpen);
   const taskConetent = useTaskDetailsStore((state) => state.taskContent);
   const toggleSheetOpen = useTaskDetailsStore((state) => state.toggleSheetOpen);
@@ -89,6 +92,7 @@ useEffect(() => {
     form.reset(formValues);
     
     setDueDate(!!taskConetent.dueDate);
+    setShowReminder(!!taskConetent.reminder);
   }
 }, [taskConetent, form]);
 
@@ -109,9 +113,31 @@ useEffect(() => {
   const isImportant = useWatch({ control: form.control, name: "isImportant" });
   const isToday = useWatch({ control: form.control, name: "isToday" });
   const isDueDate = useWatch({ control: form.control, name: "dueDate" });
+  const reminderValue = useWatch({ control: form.control, name: "reminder" });
+
+  // Quick picks for the reminder. Ones relative to the due date only show when there is one.
+  const reminderPresets = (() => {
+    const now = DateTime.now();
+    const presets: { label: string; value: DateTime }[] = [
+      { label: "In 1 hour", value: now.plus({ hours: 1 }).startOf("minute") },
+      {
+        label: "Tomorrow 9:00",
+        value: now.plus({ days: 1 }).set({ hour: 9, minute: 0, second: 0, millisecond: 0 }),
+      },
+    ];
+    if (isDueDate) {
+      const due = DateTime.fromISO(isDueDate);
+      presets.unshift(
+        { label: "At due time", value: due },
+        { label: "1 hour before", value: due.minus({ hours: 1 }) }
+      );
+    }
+    return presets.filter((p) => p.value > now);
+  })();
 
   const handleOpenChange = () => {
     setDueDate(false);
+    setShowReminder(false);
     setOverdue(false);
     form.reset();
     toggleSheetOpen();
@@ -262,6 +288,54 @@ useEffect(() => {
                   <DetailsBtn onClick={() => setDueDate(true)}>
                     <CalendarX2 />
                     Set Due Date
+                  </DetailsBtn>
+                )}
+
+                {/* Reminder: sends a push notification at this time */}
+                {reminderValue || showReminder ? (
+                  <FormField
+                    control={form.control}
+                    name="reminder"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Remind me:</FormLabel>
+                        <div className="flex flex-wrap gap-2">
+                          {reminderPresets.map((preset) => (
+                            <Button
+                              key={preset.label}
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-7 rounded-full px-3 text-xs"
+                              onClick={() => field.onChange(preset.value.toUTC().toISO())}
+                            >
+                              {preset.label}
+                            </Button>
+                          ))}
+                        </div>
+                        <FormControl>
+                          <DateTimePicker
+                            onChange={field.onChange}
+                            value={reminderValue || ""}
+                            onCancel={() => setShowReminder(false)}
+                          />
+                        </FormControl>
+                        {reminderValue && (
+                          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                            <BellRing className="size-3" />
+                            {DateTime.fromISO(reminderValue).toLocaleString(
+                              DateTime.DATETIME_MED_WITH_WEEKDAY
+                            )}
+                          </p>
+                        )}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <DetailsBtn onClick={() => setShowReminder(true)}>
+                    <BellPlus />
+                    Remind me
                   </DetailsBtn>
                 )}
 

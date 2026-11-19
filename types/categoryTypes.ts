@@ -18,6 +18,8 @@ export interface Tasks {
   dueDate: Date | null;
   completedAt: Date | null;
   setTodayDate: Date | null;
+  reminderSentAt: Date | null;
+  dueNotifiedAt: Date | null;
   completed: boolean;
   isImportant: boolean;
   isToday: boolean;
